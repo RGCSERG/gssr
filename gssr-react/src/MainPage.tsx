@@ -4,8 +4,10 @@ import Button from "./Button";
 
 const MainPage = () => {
   return (
-    <div className="flex items-center justify-center h-screen flex-col gap-5 font-mono">
-      <p className="font-bold text-5xl">Welcome to gssr.</p>
+    <div className="flex items-center justify-center h-screen flex-col gap-8 font-mono">
+      <p className="font-bold text-5xl motion-safe:animate-bounce">
+        Welcome to gssr.
+      </p>
       <Form placehold="Enter a Username" />
       <Form placehold="Enter a Room name" />
       <div className="flex items-center justify-center gap-5 w-full">

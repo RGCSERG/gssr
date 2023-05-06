@@ -6,7 +6,7 @@ interface Props {
 
 const Button = ({ name }: Props) => {
   return (
-    <button className="bg-sky-500 hover:bg-sky-700 text-white p-1 rounded-sm w-1/6 h-20 font-medium text-3xl">
+    <button className="outline outline-4 outline-black w-1/6 h-16 text-2xl rounded-full hover:bg-slate-200">
       {name}
     </button>
   );
