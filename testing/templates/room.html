@@ -13,6 +13,11 @@
     <button type="button" name="send" id="send-btn" onClick="sendMessage()">
       Send
     </button>
+    {% if owner %}
+    <button type="button" name="start" id="start-btn" onClick="startGame()">
+        start
+    </button>
+    {%endif%}
   </div>
 </div>
 <script type="text/javascript">
@@ -37,6 +42,9 @@
   socketio.on("message", (data) => {
     createMessage(data.name, data.message);
   });
+  socketio.on("start_game", data => {
+    createMessage(data.name,data.message);
+  });
 
   const sendMessage = () => {
     const message = document.getElementById("message");
@@ -44,6 +52,12 @@
     socketio.emit("message", { data: message.value });
     message.value = "";
   };
+  const startGame = () => {
+    const message = true;
+    if (message == null) return;
+    socketio.emit("start_game", {data : true});
+    message.value = null;
+   };
 </script>
 {% for msg in messages %}
 <script type="text/javascript">
