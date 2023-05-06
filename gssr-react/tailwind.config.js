@@ -5,9 +5,13 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      scale: {
+        '60': '0.6',
+      }
+    },
   },
   plugins: [],
-  
+  darkMode:'class',
 }
 
