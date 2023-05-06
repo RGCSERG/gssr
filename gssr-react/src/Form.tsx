@@ -1,20 +1,20 @@
 import { useState } from "react";
 
-const Form = () => {
-  const [Username, setUsername] = useState("");
+interface Props {
+  placehold: string;
+  name: string;
+}
+
+const Form = ({ placehold }: Props) => {
+  const [Value, setValue] = useState("");
   return (
-    <>
-      <input
-        className="border-solid border-2 border-sky-500 hover:border-sky-700 focus:outline-none w-1/6 h-10"
-        placeholder="Enter a value"
-        value={Username}
-        onChange={(e) => setUsername(e.target.value)}
-      />
-      {Username !== "" && <p>Current username: {Username}</p>}
-      <button className="bg-sky-500 hover:bg-sky-700 text-white p-1 rounded-sm w-1/12">
-        Continue
-      </button>
-    </>
+    <input
+      className="border-solid border-4 border-black 
+       focus:outline-none w-1/3 h-20 p-5 rounded-md text-xl dark:border-white dark:bg-black dark:text-white"
+      placeholder={placehold}
+      value={Value}
+      onChange={(e) => setValue(e.target.value)}
+    />
   );
 };
 
