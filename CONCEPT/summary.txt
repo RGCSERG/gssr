@@ -1,0 +1,19 @@
+What is it:
+- Emoji guessing game similar to gartic phone or jackbox
+Target Audience:
+- Primarily disord users/twitch streamers who can play with their communit/friends
+Money making: 
+- Donations/premium accounts and advertisement
+
+build plan
+1. client-server
+2. game-logic
+3. authentication-accounts system
+4. front-end
+5. scale-optimise
+
+Technologies: 
+- ReactJS
+- TailwindCSS
+- Flask
+- MongoDB
