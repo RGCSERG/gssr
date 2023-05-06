@@ -2,6 +2,7 @@ import { useState } from "react";
 
 interface Props {
   placehold: string;
+  name: string;
 }
 
 const Form = ({ placehold }: Props) => {

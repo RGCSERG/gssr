@@ -10,8 +10,8 @@ const MainPage = () => {
         <p className="dark:text-white font-bold text-5xl motion-safe:animate-bounce">
           Welcome to gssr.
         </p>
-        <Form placehold="Enter a Username" />
-        <Form placehold="Enter a Room name" />
+        <Form placehold="Enter a Username" name="username" />
+        <Form placehold="Enter a Room name" name="roomName" />
         <div className="flex items-center justify-center gap-5 w-full">
           <Button name="Join room" />
           <Button name="Create room" />
