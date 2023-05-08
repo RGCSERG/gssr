@@ -1,46 +1,36 @@
-import React from "react";
 import Form from "./Form";
 import Button from "./Button";
 import ThemeButton from "./ThemeButton";
-import GitHubMark from "./assets/GitHubMark.svg";
+import { BsGithub } from "react-icons/bs";
 
 const MainPage = () => {
   return (
     <>
-      <div className="dark:bg-black flex items-center justify-center h-screen flex-col gap-8 font-mono">
-        <p className="dark:text-white font-bold text-5xl motion-safe:animate-bounce">
+      <div className="flex h-screen flex-col items-center justify-center gap-8 font-mono dark:bg-black">
+        <p className="text-shadow text-5xl font-bold motion-safe:animate-bounce dark:text-white">
           Welcome to gssr.
         </p>
         <Form placehold="Enter a Username" name="username" />
         <Form placehold="Enter a Room name" name="roomName" />
-        <div className="flex items-center justify-center gap-5 w-full">
+        <div className="flex w-full items-center justify-center gap-5">
           <Button name="Join room" />
           <Button name="Create room" />
         </div>
       </div>
-      <div className="w-full flex justify-center items-center h-20 fixed bottom-0 left-0 gap-3 font-mono">
+      <div className="text-shadow fixed bottom-0 left-0 flex h-20 w-full select-none items-center justify-center gap-3 font-mono">
         <a
-          className="hover:rotate-180 inline-flex items-center duration-200"
+          className="inline-flex items-center duration-200 hover:scale-110 hover:animate-pulse"
           href="https://github.com/RGCSERG/gssr"
         >
-          <img
-            className="mx-auto object-center object-scale-down h-9 dark:invert"
-            src={GitHubMark}
-          ></img>
+          <BsGithub className=" object-center dark:invert" size={35}></BsGithub>
         </a>
         <p className="text-xl dark:text-white">
           © 2023{" "}
-          <a
-            className="text-blue-500 hover:text-blue-600 underline dark:text-blue-400 dark:hover:text-blue-500"
-            href="https://github.com/RGCSERG"
-          >
+          <a className="credit-text" href="https://github.com/RGCSERG">
             RGCSERG
           </a>{" "}
           &{" "}
-          <a
-            className="text-blue-500 hover:text-blue-600 underline dark:text-blue-400 dark:hover:text-blue-500"
-            href="https://github.com/goat6"
-          >
+          <a className="credit-text" href="https://github.com/goat6">
             goat6
           </a>
         </p>
