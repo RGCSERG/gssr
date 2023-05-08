@@ -1,12 +1,13 @@
-import React from "react";
-
 interface Props {
   name: string;
 }
 
 const Button = ({ name }: Props) => {
   return (
-    <button className="outline outline-4 outline-black w-1/6 h-16 text-2xl rounded-full hover:bg-gray-200 dark:hover:bg-gray-800 dark:text-white dark:outline-white">
+    <button
+      className="text-shadow h-16 w-1/6 rounded-full text-2xl shadow-lg outline 
+    outline-4 outline-black hover:bg-gray-200 dark:text-white dark:outline-white dark:hover:bg-gray-800"
+    >
       {name}
     </button>
   );

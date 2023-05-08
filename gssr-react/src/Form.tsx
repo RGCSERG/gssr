@@ -9,8 +9,8 @@ const Form = ({ placehold }: Props) => {
   const [Value, setValue] = useState("");
   return (
     <input
-      className="border-solid border-4 border-black 
-       focus:outline-none w-1/3 h-20 p-5 rounded-md text-xl dark:border-white dark:bg-black dark:text-white"
+      className="text-shadow h-20 w-1/3 
+       rounded-md border-4 border-solid border-black p-5 text-xl shadow-lg focus:outline-none dark:border-white dark:bg-black dark:text-white"
       placeholder={placehold}
       value={Value}
       onChange={(e) => setValue(e.target.value)}
