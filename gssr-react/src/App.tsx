@@ -1,4 +1,4 @@
-import Form from "./Form";
+import Form from "./InputField";
 import MainPage from "./MainPage";
 
 const App = () => {
