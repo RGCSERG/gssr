@@ -1,22 +1,30 @@
-import InputField from "./InputField";
-import Button from "./Button";
 import { useState } from "react";
+import { FieldValues, useForm } from "react-hook-form";
 
 const Form = () => {
-  const [formValues, setFormValues] = useState({
-    username: "",
-    roomName: "",
-  });
+  const { register, handleSubmit } = useForm();
+
+  const onSubmit = (data: FieldValues) => {
+    console.log(data);
+  };
 
   return (
-    <>
-      <InputField placehold="Enter a Username" name="username" />
-      <InputField placehold="Enter a Room name" name="roomName" />
-      <div className="flex w-full items-center justify-center gap-6">
-        <Button onClick={() => console.log(formValues)} name="Join room" />
-        <Button onClick={() => console.log(formValues)} name="Create room" />
-      </div>
-    </>
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="flex w-full flex-col items-center justify-center gap-4"
+    >
+      <input
+        {...register("username")}
+        placeholder="Enter Username"
+        className="form-input"
+      />
+      <input
+        {...register("roomCode")}
+        placeholder="Enter Room Code"
+        className="form-input"
+      />
+      <button className="form-button">Join Room</button>
+    </form>
   );
 };
 
