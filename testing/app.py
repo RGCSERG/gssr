@@ -6,6 +6,7 @@ from cryptography.fernet import Fernet
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "hjhjsdahhds"
+app.config["SERVER_NAME"] = "gssr.uk"
 sockio = SocketIO(app)
 
 rooms = {}
@@ -127,4 +128,4 @@ def disconnect():
     print(f"{name} has left the room {room}")
 
 if __name__ == "__main__":
-    sockio.run(app, debug=True, allow_unsafe_werkzeug=True)
+    sockio.run(app, allow_unsafe_werkzeug=True)
