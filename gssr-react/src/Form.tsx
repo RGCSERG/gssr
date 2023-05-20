@@ -1,8 +1,22 @@
-import { useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
+import { number, z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+const schema = z.object({
+  roomCode: z.number().int().safe().finite().positive().min(100000).max(999999),
+  username: z.string().min(3).max(20).trim(),
+});
+
+type FormData = z.infer<typeof schema>;
 
 const Form = () => {
-  const { register, handleSubmit } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm<FormData>({
+    resolver: zodResolver(schema),
+  });
 
   const onSubmit = (data: FieldValues) => {
     console.log(data);
@@ -18,12 +32,20 @@ const Form = () => {
         placeholder="Enter Username"
         className="form-input"
       />
+      {/* {errors.username && <p>{errors.username.message}</p>} */}
       <input
-        {...register("roomCode")}
+        {...register("roomCode", { valueAsNumber: true })}
         placeholder="Enter Room Code"
-        className="form-input"
+        className="form-input custom-input"
+        type="number"
       />
-      <button className="form-button">Join Room</button>
+      {/* {errors.roomCode && <p>{errors.roomCode.message}</p>} */}
+      <button
+        disabled={!isValid}
+        className="form-button custom-input disabled:opacity-30 disabled:hover:bg-inherit"
+      >
+        Join Room
+      </button>
     </form>
   );
 };

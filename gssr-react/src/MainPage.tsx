@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import faviChange from "./faviChange";
 
 const MainPage = () => {
-  const pageLoad = useEffect(() => {
+  useEffect(() => {
     faviChange();
     document.title = "gssr";
   }, []);

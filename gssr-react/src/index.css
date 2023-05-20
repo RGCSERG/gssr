@@ -19,3 +19,14 @@
   @apply text-shadow w-1/6 h-16 select-none rounded-lg text-2xl shadow-lg 
    outline outline-4 outline-black hover:bg-gray-200 dark:text-white dark:outline-white dark:hover:bg-gray-800
 }
+.custom-input {
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
+  appearance: none;
+}
+
+.custom-input::-webkit-inner-spin-button,
+.custom-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
