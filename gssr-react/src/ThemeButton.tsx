@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { FiMoon, FiSun } from "react-icons/fi";
+import { RiMoonFoggyLine, RiSunCloudyLine } from "react-icons/ri";
 
 const ThemeButton = () => {
   const [theme, setTheme] = useState("");
@@ -35,21 +35,21 @@ const ThemeButton = () => {
   const handleThemeIcon = () => {
     if (theme === "light") {
       return (
-        <FiMoon
+        <RiMoonFoggyLine
           onClick={handleThemeSwitch}
           color="black"
           size="50"
           className="theme-button"
-        ></FiMoon>
+        ></RiMoonFoggyLine>
       );
     } else {
       return (
-        <FiSun
+        <RiSunCloudyLine
           onClick={handleThemeSwitch}
           color="white"
           size="50"
           className="theme-button"
-        ></FiSun>
+        ></RiSunCloudyLine>
       );
     }
   };
