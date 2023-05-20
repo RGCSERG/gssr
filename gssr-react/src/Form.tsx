@@ -1,20 +1,22 @@
+import InputField from "./InputField";
+import Button from "./Button";
 import { useState } from "react";
 
-interface Props {
-  placehold: string;
-  name: string;
-}
+const Form = () => {
+  const [formValues, setFormValues] = useState({
+    username: "",
+    roomName: "",
+  });
 
-const Form = ({ placehold }: Props) => {
-  const [Value, setValue] = useState("");
   return (
-    <input
-      className="border-solid border-4 border-black 
-       focus:outline-none w-1/3 h-20 p-5 rounded-md text-xl dark:border-white dark:bg-black dark:text-white"
-      placeholder={placehold}
-      value={Value}
-      onChange={(e) => setValue(e.target.value)}
-    />
+    <>
+      <InputField placehold="Enter a Username" name="username" />
+      <InputField placehold="Enter a Room name" name="roomName" />
+      <div className="flex w-full items-center justify-center gap-6">
+        <Button onClick={() => console.log(formValues)} name="Join room" />
+        <Button onClick={() => console.log(formValues)} name="Create room" />
+      </div>
+    </>
   );
 };
 
