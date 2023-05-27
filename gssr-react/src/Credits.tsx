@@ -12,7 +12,7 @@ const Credits = () => {
       >
         <BsGithub className=" object-center dark:invert" size={35}></BsGithub>
       </a>
-      <p className="text-xl dark:text-white">
+      <p className=" dark:text-white sm:text-xl">
         © 2023{" "}
         <a className="credit-text" href="https://github.com/RGCSERG">
           RGCSERG

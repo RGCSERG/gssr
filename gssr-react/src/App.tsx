@@ -13,7 +13,7 @@ const App = () => {
   return (
     <>
       <div className="flex h-screen flex-col items-center justify-center font-mono dark:bg-black">
-        <p className="text-shadow mb-4 text-5xl font-bold motion-safe:animate-bounce dark:text-white">
+        <p className="text-shadow mb-4 text-2xl font-bold motion-safe:animate-bounce dark:text-white md:text-5xl">
           Welcome to gssr.
         </p>
         <Form />
