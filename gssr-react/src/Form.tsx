@@ -1,22 +1,52 @@
-import InputField from "./InputField";
-import Button from "./Button";
-import { useState } from "react";
+import { FieldValues, useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+const schema = z.object({
+  roomCode: z.number().int().safe().finite().positive().min(100000).max(999999),
+  username: z.string().min(3).max(20).trim(),
+});
+
+type FormData = z.infer<typeof schema>;
 
 const Form = () => {
-  const [formValues, setFormValues] = useState({
-    username: "",
-    roomName: "",
+  const {
+    register,
+    handleSubmit,
+    formState: { isValid },
+  } = useForm<FormData>({
+    resolver: zodResolver(schema),
   });
 
+  const onSubmit = (data: FieldValues) => {
+    console.log(data);
+  };
+
   return (
-    <>
-      <InputField placehold="Enter a Username" name="username" />
-      <InputField placehold="Enter a Room name" name="roomName" />
-      <div className="flex w-full items-center justify-center gap-6">
-        <Button onClick={() => console.log(formValues)} name="Join room" />
-        <Button onClick={() => console.log(formValues)} name="Create room" />
-      </div>
-    </>
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="flex w-full flex-col items-center justify-center gap-4"
+    >
+      <input
+        {...register("username")}
+        placeholder="Enter Username"
+        className="form-input"
+      />
+      {/* {errors.username && <p>{errors.username.message}</p>} */}
+      <input
+        {...register("roomCode", { valueAsNumber: true })}
+        placeholder="Enter Room Code"
+        className="form-input custom-input"
+        type="number"
+      />
+      {/* {errors.roomCode && <p>{errors.roomCode.message}</p>} */}
+      <button
+        disabled={!isValid}
+        className="form-button custom-input disabled:opacity-30 disabled:hover:bg-inherit"
+      >
+        Join Room
+      </button>
+    </form>
   );
 };
 
