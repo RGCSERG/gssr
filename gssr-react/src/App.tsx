@@ -16,6 +16,9 @@ const App = () => {
         <p className="text-shadow mb-4 text-2xl font-bold motion-safe:animate-bounce dark:text-white md:text-5xl">
           Welcome to gssr.
         </p>
+        <p className="text-shadow mb-4 text-center text-sm motion-safe:animate-bounce dark:text-white md:text-3xl">
+          This site doesn't actually do anything.
+        </p>
         <Form />
       </div>
       <Credits />
