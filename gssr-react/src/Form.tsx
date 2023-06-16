@@ -1,20 +1,52 @@
-import { useState } from "react";
+import { FieldValues, useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-interface Props {
-  placehold: string;
-  name: string;
-}
+const schema = z.object({
+  roomCode: z.number().int().safe().finite().positive().min(100000).max(999999),
+  username: z.string().min(3).max(20).trim(),
+});
 
-const Form = ({ placehold }: Props) => {
-  const [Value, setValue] = useState("");
+type FormData = z.infer<typeof schema>;
+
+const Form = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { isValid },
+  } = useForm<FormData>({
+    resolver: zodResolver(schema),
+  });
+
+  const onSubmit = (data: FieldValues) => {
+    console.log(data);
+  };
+
   return (
-    <input
-      className="border-solid border-4 border-black 
-       focus:outline-none w-1/3 h-20 p-5 rounded-md text-xl dark:border-white dark:bg-black dark:text-white"
-      placeholder={placehold}
-      value={Value}
-      onChange={(e) => setValue(e.target.value)}
-    />
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="flex w-full flex-col items-center justify-center gap-4"
+    >
+      <input
+        {...register("username")}
+        placeholder="Enter Username"
+        className="form-input"
+      />
+      {/* {errors.username && <p>{errors.username.message}</p>} */}
+      <input
+        {...register("roomCode", { valueAsNumber: true })}
+        placeholder="Enter Room Code"
+        className="form-input custom-input"
+        type="number"
+      />
+      {/* {errors.roomCode && <p>{errors.roomCode.message}</p>} */}
+      <button
+        disabled={!isValid}
+        className="form-button custom-input disabled:opacity-30 disabled:hover:bg-inherit"
+      >
+        Join Room
+      </button>
+    </form>
   );
 };
 
