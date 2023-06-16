@@ -15,3 +15,13 @@ while True:
         print("connection to databse failed")
         print(error)
         time.sleep(2)
+# while True:
+#     try:
+#         conn2 = psycopg2.connect(host='localhost', database='postgres', user='postgres', password=f'{passwo}', cursor_factory=RealDictCursor)
+#         cursor2 = conn2.cursor()
+#         print("connected to second database")
+#         break
+#     except Exception as error:
+#         print("connection to databse failed")
+#         print(error)
+#         time.sleep(2)
