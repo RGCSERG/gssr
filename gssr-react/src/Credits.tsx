@@ -18,8 +18,8 @@ const Credits = () => {
           RGCSERG
         </a>{" "}
         &{" "}
-        <a className="credit-text" href="https://github.com/goat6">
-          goat6
+        <a className="credit-text" href="https://github.com/yonahadev">
+          yonahadev
         </a>
       </p>
     </div>
