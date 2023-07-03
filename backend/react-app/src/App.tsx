@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { CanceledError } from "axios";
 import { useEffect, useState } from "react";
 
 interface User {
@@ -8,19 +8,40 @@ interface User {
 
 const App = () => {
   const [users, setUsers] = useState<User[]>([]);
+  const [error, setError] = useState("");
+  const [isLoading, setLoading] = useState(false);
 
   useEffect(() => {
+    const controller = new AbortController();
+    setLoading(true);
     axios
-      .get<User[]>("http://127.0.0.1:8000/posts")
-      .then((res) => setUsers(res.data));
+      .get<User[]>("http://127.0.0.1:8000/posts", { signal: controller.signal })
+      .then((res) => {
+        setLoading(false);
+        setUsers(res.data);
+      })
+      .catch((err) => {
+        if (err instanceof CanceledError) return;
+        setError(err.message);
+        setLoading(false);
+      });
+    // .finally(() => {
+    //   setLoading(false);    doesn't work with strict mode
+    // });
+
+    return () => controller.abort();
   }, []);
 
   return (
-    <ul>
-      {users.map((user) => (
-        <li key={user._id}>{user.title}</li>
-      ))}
-    </ul>
+    <>
+      {error && <p className="text-danger">{error}</p>}
+      {isLoading && <div className="spinner-border"></div>}
+      <ul>
+        {users.map((user) => (
+          <li key={user._id}>{user.title}</li>
+        ))}
+      </ul>
+    </>
   );
 };
 
