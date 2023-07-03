@@ -3,28 +3,39 @@ from fastapi.params import Body
 from .database import conn, cursor #(conn, conn2, cursor, cursor2)
 from .schemas import Post
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.encoders import jsonable_encoder
+from fastapi.responses import JSONResponse
 #http://127.0.0.1:8000/redoc
 #http://127.0.0.1:8000/docs
 #python -m uvicorn app.main:app --reload
 app = FastAPI()
 
 
+origins = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=['http://localhost:3000'],
-    allow_methods=['*'],
-    allow_headers=['*']
+    #allow_origins=origins,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
-    
+
 @app.get("/")
 def root():
     return {"message" : "Hello world"}
 
 @app.get("/posts")
-def posts():
+async def posts() -> dict:
     cursor.execute("""SELECT * FROM posts ORDER BY _id ASC LIMIT 10""")
     data = cursor.fetchall()
-    return {"data" : data}
+    json_compatible_item_data = jsonable_encoder(data)
+    return JSONResponse(content=json_compatible_item_data)
 
 #title str, content str
 @app.post("/posts", status_code=status.HTTP_201_CREATED)
