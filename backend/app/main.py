@@ -60,8 +60,10 @@ def update_post(id:int, payload : Post):
     conn.commit()
     return {"data": post}
 
-
-
+@app.post("/token")
+async def token(payload : Post):
+    print(payload)
+    return {"ddd" : "dddd"}
 # @app.get("/tests")
 # def get_tests():
 #     cursor2.execute("""SELECT Public.test1.* from Public.test1""")
