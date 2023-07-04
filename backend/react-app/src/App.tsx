@@ -1,24 +1,50 @@
 import axios, { CanceledError } from "axios";
 import { useEffect, useState } from "react";
+import PostForm from "./backend/components/PostForm";
 
-interface User {
+interface Post {
   _id: number;
   title: string;
+  content: string;
+}
+
+interface sendPost {
+  title: string;
+  content: string;
 }
 
 const App = () => {
-  const [users, setUsers] = useState<User[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
   const [error, setError] = useState("");
   const [isLoading, setLoading] = useState(false);
+
+  const createPost = (data: sendPost) => {
+    const controller = new AbortController();
+    setLoading(true);
+    axios
+      .post<Post[]>("http://127.0.0.1:8000/posts", data, {
+        signal: controller.signal,
+      })
+      .then((res) => {
+        setLoading(false);
+        setPosts([...posts, res.data[0]]);
+      })
+      .catch((err) => {
+        if (err instanceof CanceledError) return;
+        setError(err.message);
+        setLoading(false);
+      });
+    return () => controller.abort();
+  };
 
   useEffect(() => {
     const controller = new AbortController();
     setLoading(true);
     axios
-      .get<User[]>("http://127.0.0.1:8000/posts", { signal: controller.signal })
+      .get<Post[]>("http://127.0.0.1:8000/posts", { signal: controller.signal })
       .then((res) => {
         setLoading(false);
-        setUsers(res.data);
+        setPosts(res.data);
       })
       .catch((err) => {
         if (err instanceof CanceledError) return;
@@ -34,11 +60,17 @@ const App = () => {
 
   return (
     <>
+      <div className="mb-3">
+        <PostForm onSubmit={createPost}></PostForm>
+      </div>
       {error && <p className="text-danger">{error}</p>}
       {isLoading && <div className="spinner-border"></div>}
       <ul>
-        {users.map((user) => (
-          <li key={user._id}>{user.title}</li>
+        {posts.map((post) => (
+          <li key={post._id}>
+            {post.title}
+            <p>{post.content}</p>
+          </li>
         ))}
       </ul>
     </>

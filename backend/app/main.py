@@ -1,13 +1,14 @@
 from fastapi import FastAPI, Response, status, HTTPException
 from fastapi.params import Body
-from .database import conn, cursor #(conn, conn2, cursor, cursor2)
+from .database import conn, cursor  # (conn, conn2, cursor, cursor2)
 from .schemas import Post
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
-#http://127.0.0.1:8000/redoc
-#http://127.0.0.1:8000/docs
-#python -m uvicorn app.main:app --reload
+
+# http://127.0.0.1:8000/redoc
+# http://127.0.0.1:8000/docs
+# python -m uvicorn app.main:app --reload
 app = FastAPI()
 
 
@@ -19,62 +20,89 @@ origins = [
 
 app.add_middleware(
     CORSMiddleware,
-    #allow_origins=origins,
+    # allow_origins=origins,
     allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
+
 @app.get("/")
 def root():
-    return {"message" : "Hello world"}
+    return {"message": "Hello world"}
+
 
 @app.get("/posts")
 async def posts() -> dict:
-    cursor.execute("""SELECT * FROM posts ORDER BY _id ASC LIMIT 10""")
+    cursor.execute("""SELECT * FROM posts ORDER BY _id DESC LIMIT 10""")
     data = cursor.fetchall()
     json_compatible_item_data = jsonable_encoder(data)
     return JSONResponse(content=json_compatible_item_data)
 
-#title str, content str
+
+# title str, content str
 @app.post("/posts", status_code=status.HTTP_201_CREATED)
-async def create_posts(payload : Post):
-    cursor.execute("""INSERT INTO posts (title, content, published) VALUES (%s,%s,%s) RETURNING * """, (payload.title, payload.content, payload.published))
+async def create_posts(payload: Post):
+    cursor.execute(
+        """INSERT INTO posts (title, content, published) VALUES (%s,%s,%s) RETURNING * """,
+        (payload.title, payload.content, payload.published),
+    )
     post = cursor.fetchall()
     conn.commit()
-    return {"data" : post}
+    json_compatible_item_data = jsonable_encoder(post)
+    return JSONResponse(content=json_compatible_item_data)
+
 
 @app.get("/posts/{id}")
-def get_post(id:int):
-    cursor.execute("""SELECT * FROM posts WHERE _id = %s """, (str(id),)) # problems that occur are due to str(id), with a comma making it a tuple while without it, it's not a tuple. i.e:(2,) # is a tuple- 2, # is a tuple- (2) is not a tuple
+def get_post(id: int):
+    cursor.execute(
+        """SELECT * FROM posts WHERE _id = %s """, (str(id),)
+    )  # problems that occur are due to str(id), with a comma making it a tuple while without it, it's not a tuple. i.e:(2,) # is a tuple- 2, # is a tuple- (2) is not a tuple
     post = cursor.fetchone()
     if not post:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"post with id : {id} was not found")
-    return {"data" : post}
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"post with id : {id} was not found",
+        )
+    return {"data": post}
+
 
 @app.delete("/posts/{id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_post(id:int):
+def delete_post(id: int):
     cursor.execute("""DELETE FROM posts WHERE _id = %s  RETURNING * """, (str(id),))
     post = cursor.fetchone()
     if post == None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"post with id : {id} cannot be deleted because it does not exist")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"post with id : {id} cannot be deleted because it does not exist",
+        )
     conn.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
+
 @app.put("/posts/{id}")
-def update_post(id:int, payload : Post):
-    cursor.execute("""UPDATE posts SET title = %s, content = %s, published = %s  WHERE _id = %s RETURNING *""", (payload.title, payload.content, payload.published, id))
+def update_post(id: int, payload: Post):
+    cursor.execute(
+        """UPDATE posts SET title = %s, content = %s, published = %s  WHERE _id = %s RETURNING *""",
+        (payload.title, payload.content, payload.published, id),
+    )
     post = cursor.fetchone()
     if post == None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"post with id : {id} cannot be delete because it does not exist")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"post with id : {id} cannot be delete because it does not exist",
+        )
     conn.commit()
     return {"data": post}
 
+
 @app.post("/token")
-async def token(payload : Post):
+async def token(payload: Post):
     print(payload)
-    return {"ddd" : "dddd"}
+    return {"ddd": "dddd"}
+
+
 # @app.get("/tests")
 # def get_tests():
 #     cursor2.execute("""SELECT Public.test1.* from Public.test1""")
