@@ -1,6 +1,6 @@
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form"; // @7.43
+import { z } from "zod"; // @3.20.6
+import { zodResolver } from "@hookform/resolvers/zod"; // @2.9.11
 import categories from "../categories";
 
 const schema = z.object({

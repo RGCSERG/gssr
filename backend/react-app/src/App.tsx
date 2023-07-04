@@ -19,6 +19,7 @@ const App = () => {
   const [isLoading, setLoading] = useState(false);
 
   const createPost = (data: sendPost) => {
+    //do it with userid for optimistic reloading
     const controller = new AbortController();
     setLoading(true);
     axios
@@ -35,6 +36,16 @@ const App = () => {
         setLoading(false);
       });
     return () => controller.abort();
+  };
+
+  const deletePost = (post: Post) => {
+    const originalPosts = [...posts];
+    setPosts(posts.filter((p) => p._id !== post._id));
+
+    axios.delete("http://127.0.0.1:8000/posts/" + post._id).catch((err) => {
+      setError(err.message);
+      setPosts(originalPosts);
+    });
   };
 
   useEffect(() => {
@@ -65,11 +76,20 @@ const App = () => {
       </div>
       {error && <p className="text-danger">{error}</p>}
       {isLoading && <div className="spinner-border"></div>}
-      <ul>
+      <ul className="list-group">
         {posts.map((post) => (
-          <li key={post._id}>
+          <li
+            className="list-group-item d-flex justify-content-between"
+            key={post._id}
+          >
             {post.title}
             <p>{post.content}</p>
+            <button
+              className="btn btn-outline-danger"
+              onClick={() => deletePost(post)}
+            >
+              Delete
+            </button>
           </li>
         ))}
       </ul>

@@ -16,6 +16,7 @@
     "components": "^0.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-hook-form": "7.43",
     "styled": "^1.0.0",
     "styled-components": "^5.3.10",
     "zod": "^3.20.6"
