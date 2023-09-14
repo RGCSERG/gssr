@@ -1,29 +1,91 @@
-import { useEffect } from "react";
+import { useState } from "react";
 import { io } from "socket.io-client";
 import { GSSR_DOMAIN, GSSR_PORT } from "./constants";
+import { useForm } from "react-hook-form"; // @7.43
+import { z } from "zod"; // @3.20.6
+import { zodResolver } from "@hookform/resolvers/zod"; // @2.9.11
+import Chat from "./components/Chat";
+// import { Alert } from "react-bootstrap";
 
 const socket = io(`ws://${GSSR_DOMAIN}:${GSSR_PORT}`, {
   transports: ["websocket"],
 });
+const schema = z.object({
+  room: z.string().min(2).max(50),
+  username: z.string().min(5).max(50),
+});
+
+type SignUpFormData = z.infer<typeof schema>;
 
 const App = () => {
-  useEffect(() => {
-    // You can now use the 'socket' instance to send and receive data.
-    // For example:
-    socket.emit("chat message", "Hello, server!"); // Emit a message to the server
+  const [user, setUser] = useState("");
+  const [room, setRoom] = useState("");
 
-    socket.on("chat message", (message) => {
-      // Handle incoming messages from the server
-      console.log("Received message from server:", message);
-    });
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<SignUpFormData>({
+    resolver: zodResolver(schema),
+  });
 
-    // Don't forget to clean up the socket connection when the component unmounts
-    return () => {
-      socket.disconnect();
-    };
-  }, []);
+  const joinRoom = (data: SignUpFormData) => {
+    setRoom(data.room);
+    setUser(data.username);
+    console.log("we up");
 
-  return <div>App</div>;
+    socket.emit("join_room", data.room);
+  };
+
+  return (
+    <>
+      <form
+        onSubmit={handleSubmit((data) => {
+          joinRoom(data);
+          reset();
+        })}
+      >
+        <div className="mb-3">
+          <label htmlFor="room" className="form-label">
+            Room
+          </label>
+          <input
+            {...register("room")}
+            id="room"
+            type="text"
+            className="form-control"
+            placeholder="XX-XX-XX"
+          />
+          {errors.room && <p className="text-danger">{errors.room.message}</p>}
+        </div>
+        <div className="mb-3">
+          <label htmlFor="username" className="form-label">
+            Username
+          </label>
+          <input
+            {...register("username")}
+            id="username"
+            type="text"
+            className="form-control"
+            placeholder="GYYYAAAATTT"
+          />
+          {errors.username && (
+            <p className="text-danger">{errors.username.message}</p>
+          )}
+        </div>
+        {/* {error && (
+        <Alert key="danger" variant="danger">
+          {error}
+        </Alert>
+      )} */}
+        <div className="d-grid">
+          <button className="btn btn-primary">JOIN ROOM</button>
+        </div>
+      </form>
+      {user !== "" && <Chat socket={socket} user={user} room={room} />}
+    </>
+  );
 };
 
 export default App;
