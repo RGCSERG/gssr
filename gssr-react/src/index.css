@@ -13,10 +13,10 @@
 }
 .form-input {
   @apply text-shadow shadow-lg
-  h-20 w-1/4 select-none rounded-md border-4 border-solid border-black p-5 text-xl focus:outline-none dark:border-white dark:bg-black dark:text-white
+  h-20 w-3/4 md:w-1/2 lg:w-1/4 select-none rounded-md border-4 border-solid border-black p-5 text-xl focus:outline-none dark:border-white dark:bg-black dark:text-white
 }
 .form-button {
-  @apply text-shadow w-1/6 h-16 select-none rounded-lg text-2xl shadow-lg 
+  @apply text-shadow w-1/2 md:w-1/2 lg:w-1/6 h-16 select-none rounded-lg text-2xl shadow-lg 
    outline outline-4 outline-black hover:bg-gray-200 dark:text-white dark:outline-white dark:hover:bg-gray-800
 }
 .custom-input {
