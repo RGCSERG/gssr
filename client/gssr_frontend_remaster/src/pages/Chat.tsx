@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Socket } from "socket.io-client";
 import ScrollToBottom from "react-scroll-to-bottom";
+import { useParams } from "react-router-dom";
 
 interface Message {
   room: string;
@@ -12,15 +13,15 @@ interface Message {
 interface Props {
   socket: Socket;
   user: string;
-  room: string;
 }
 
-const Chat = ({ socket, user, room }: Props) => {
+const Chat = ({ socket, user }: Props) => {
+  const { room } = useParams();
   const [currentMessage, setCurrentMessage] = useState("");
   const [messageList, setMessageList] = useState<Message[]>([]);
 
   const sendMessage = async () => {
-    if (currentMessage.trim() !== "") {
+    if (currentMessage.trim() !== "" && room !== undefined) {
       const messageData: Message = {
         room: room,
         author: user,
