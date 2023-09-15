@@ -25,7 +25,7 @@ const App = () => {
         />
         <Route
           path="/room/:room"
-          element={<Chat socket={socket} user={user} />}
+          element={<Chat socket={socket} user={user} setUser={setUser} />}
         />
       </Routes>
     </>

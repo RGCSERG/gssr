@@ -11,6 +11,7 @@ import {
   Card,
   Alert,
 } from "react-bootstrap";
+import MakeChangesModal from "../components/MakeChangesModal";
 
 interface Message {
   id: number;
@@ -21,18 +22,30 @@ interface Message {
 }
 
 interface Props {
+  setUser: React.Dispatch<React.SetStateAction<string>>;
   socket: Socket;
   user: string;
 }
 
-const Chat = ({ socket, user }: Props) => {
+const Chat = ({ socket, user, setUser }: Props) => {
   const { room } = useParams();
   const [currentMessage, setCurrentMessage] = useState("");
   const [messageList, setMessageList] = useState<Message[]>([]);
+  const [show, setShow] = useState(false);
+
   function getRandomInt(min: number, max: number): number {
     // Use Math.floor() to round down to the nearest integer
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+  useEffect(() => {
+    if (!user === true) {
+      handleShow();
+    }
+  }, [user]);
 
   const sendMessage = async () => {
     if (currentMessage.trim() !== "" && room !== undefined) {
@@ -137,6 +150,7 @@ const Chat = ({ socket, user }: Props) => {
                 type="text"
                 value={currentMessage}
                 placeholder="Hey..."
+                disabled={!user === true}
                 onChange={(event) => {
                   setCurrentMessage(event.target.value);
                 }}
@@ -144,12 +158,29 @@ const Chat = ({ socket, user }: Props) => {
               />
             </Col>
             <Col xs="auto">
-              <Button onClick={sendMessage} variant="primary">
+              <Button
+                onClick={sendMessage}
+                variant="primary"
+                disabled={!user === true}
+              >
                 &#9658;
               </Button>
             </Col>
           </Row>
         </Container>
+        {show && (
+          <MakeChangesModal
+            handleClose={() => {
+              handleClose();
+              if (!room === false) {
+                socket.emit("join_room", room);
+              }
+            }}
+            title="Oops your not logged in"
+            body="sign up statement"
+            setUser={setUser}
+          />
+        )}
       </div>
     </div>
   );
