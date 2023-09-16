@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Modal } from "react-bootstrap";
-import { useForm } from "react-hook-form";
+import { FieldValues, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 
@@ -26,6 +26,14 @@ const MakeChangesModal = ({ handleClose, title, body, setUser }: Props) => {
   } = useForm<SignUpFormData>({
     resolver: zodResolver(schema),
   });
+
+  const onSubmit = (data: FieldValues) => {
+    setUser(data.username);
+    reset();
+    handleClose();
+    console.log(data.username);
+  };
+
   return (
     <Modal show={true} onHide={handleClose}>
       <Modal.Header closeButton>
@@ -34,14 +42,7 @@ const MakeChangesModal = ({ handleClose, title, body, setUser }: Props) => {
       <Modal.Body>{body}</Modal.Body>
       <Modal.Footer>
         <>
-          <form
-            onSubmit={handleSubmit((data) => {
-              setUser(data.username);
-              reset();
-              handleClose();
-              console.log(data.username);
-            })}
-          >
+          <form onSubmit={handleSubmit(onSubmit)}>
             <div className="mb-3">
               <label htmlFor="username" className="form-label">
                 Username
@@ -51,7 +52,7 @@ const MakeChangesModal = ({ handleClose, title, body, setUser }: Props) => {
                 id="username"
                 type="text"
                 className="form-control"
-                placeholder="GYYYAAAATTT"
+                placeholder="enter username"
               />
               {errors.username && (
                 <p className="text-danger">{errors.username.message}</p>
