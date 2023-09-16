@@ -1,24 +1,23 @@
-import { Socket } from "socket.io-client";
-import { useForm } from "react-hook-form"; // @7.43
-import { z } from "zod"; // @3.20.6
 import { zodResolver } from "@hookform/resolvers/zod"; // @2.9.11
+import { useForm } from "react-hook-form"; // @7.43
 import { useNavigate } from "react-router-dom";
+import { Socket } from "socket.io-client";
+import { z } from "zod"; // @3.20.6
 // import { Alert } from "react-bootstrap";
 
 const schema = z.object({
-  room: z.string().min(2).max(50),
-  username: z.string().min(5).max(50),
+  room: z.string().min(8).max(8),
+  username: z.string().min(3).max(25),
 });
 
 type SignUpFormData = z.infer<typeof schema>;
 
 interface Props {
   socket: Socket;
-  setRoom: React.Dispatch<React.SetStateAction<string>>;
   setUser: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const JoinRoom = ({ socket, setRoom, setUser }: Props) => {
+const JoinRoom = ({ socket, setUser }: Props) => {
   const {
     register,
     handleSubmit,
@@ -27,13 +26,12 @@ const JoinRoom = ({ socket, setRoom, setUser }: Props) => {
   } = useForm<SignUpFormData>({
     resolver: zodResolver(schema),
   });
+
   const navigate = useNavigate();
 
   const joinRoom = (data: SignUpFormData) => {
-    setRoom(data.room);
     setUser(data.username);
-    console.log("we up");
-
+    console.log(`Connected to ${data.room} as ${data.username}`);
     socket.emit("join_room", data.room);
     navigate(`/room/${data.room}`);
   };
@@ -55,7 +53,7 @@ const JoinRoom = ({ socket, setRoom, setUser }: Props) => {
             id="room"
             type="text"
             className="form-control"
-            placeholder="XX-XX-XX"
+            placeholder="Enter room name"
           />
           {errors.room && <p className="text-danger">{errors.room.message}</p>}
         </div>
@@ -68,7 +66,7 @@ const JoinRoom = ({ socket, setRoom, setUser }: Props) => {
             id="username"
             type="text"
             className="form-control"
-            placeholder="GYYYAAAATTT"
+            placeholder="Enter username"
           />
           {errors.username && (
             <p className="text-danger">{errors.username.message}</p>
