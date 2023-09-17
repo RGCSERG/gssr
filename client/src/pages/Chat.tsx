@@ -12,6 +12,7 @@ import { useParams } from "react-router-dom";
 import ScrollToBottom from "react-scroll-to-bottom";
 import { Socket } from "socket.io-client";
 import MakeChangesModal from "../components/MakeChangesModal";
+import { getRandomInt } from "../functions/functions";
 import { ChatMessage } from "../interfaces/ChatMessage/ChatMessage";
 
 interface Props {
@@ -25,12 +26,6 @@ const Chat = ({ socket, user, setUser }: Props) => {
   const [currentMessage, setCurrentMessage] = useState("");
   const [messageList, setMessageList] = useState<ChatMessage[]>([]);
   const [showModal, setShowModal] = useState(false);
-
-  function getRandomInt(min: number, max: number): number {
-    // rounds to nearest int
-
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
 
   const updateMessageList = (newMessage: ChatMessage) => {
     setMessageList((list) => {
