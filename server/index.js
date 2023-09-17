@@ -18,7 +18,7 @@ const io = new Server(server, {
 
 
 
-const existingRooms = new Set(); //using set to ensure no duplicate values
+const usedNumbers = new Set(); //using set to ensure no duplicate values
 
 io.on("connection", (socket) => {
   console.log(`User Connected: ${socket.id}`);
@@ -32,10 +32,9 @@ io.on("connection", (socket) => {
     let roomCode; //defines empty room code variable
     do {
       roomCode = Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000; //generates random code from 1000 to 9999
-    } while (existingRooms.has(roomCode));
-    existingRooms.add(roomCode);
+    } while (usedNumbers.has(roomCode));
+    usedNumbers.add(roomCode);
     console.log(`Created Room code ${roomCode}`)
-    console.log(`Current open rooms: ${Array.from(existingRooms)}`)
     socket.emit("created_room",roomCode)
   })
 
