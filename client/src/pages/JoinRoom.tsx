@@ -6,7 +6,7 @@ import { z } from "zod"; // @3.20.6
 // import { Alert } from "react-bootstrap";
 
 const schema = z.object({
-  room: z.string().min(8).max(8),
+  room: z.string().min(8).max(8).optional(),
   username: z.string().min(3).max(25),
 });
 
@@ -27,24 +27,36 @@ const JoinRoom = ({ socket, setUser }: Props) => {
     resolver: zodResolver(schema),
   });
 
+  const onSubmit = (data: SignUpFormData) => {
+    joinRoom(data);
+    reset();
+  };
+
   const navigate = useNavigate();
 
-  const joinRoom = (data: SignUpFormData) => {
-    setUser(data.username);
-    console.log(`Connected to ${data.room} as ${data.username}`);
-    socket.emit("join_room", data.room);
-    navigate(`/room/${data.room}`);
+  const joinRoom = async (data: SignUpFormData) => {
+    const roomCode = await generateRoomCode();
+    console.log(`Connected to ${roomCode} as ${data.username}`);
+    socket.emit("join_room", roomCode);
+    navigate(`/room/${roomCode}`);
+  };
+
+  const generateRoomCode = async () => {
+    console.log("Send create room request");
+
+    return new Promise((resolve) => {
+      socket.on("created_room", (receivedRoomCode: number) => {
+        const roomCode = receivedRoomCode;
+        resolve(roomCode);
+      });
+      socket.emit("create_room");
+    });
   };
 
   return (
     <>
-      <form
-        onSubmit={handleSubmit((data) => {
-          joinRoom(data);
-          reset();
-        })}
-      >
-        <div className="mb-3">
+      <form onSubmit={handleSubmit(onSubmit)}>
+        {/* <div className="mb-3">
           <label htmlFor="room" className="form-label">
             Room
           </label>
@@ -56,7 +68,7 @@ const JoinRoom = ({ socket, setUser }: Props) => {
             placeholder="Enter room name"
           />
           {errors.room && <p className="text-danger">{errors.room.message}</p>}
-        </div>
+        </div> */}
         <div className="mb-3">
           <label htmlFor="username" className="form-label">
             Username

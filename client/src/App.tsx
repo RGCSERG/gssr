@@ -4,10 +4,10 @@ import { io } from "socket.io-client";
 import Chat from "./pages/Chat";
 import JoinRoom from "./pages/JoinRoom";
 
-const GSSR_DOMAIN = import.meta.env.VITE_GSSR_DOMAIN;
-const GSSR_PORT = import.meta.env.VITE_GSSR_PORT;
+const domainName = import.meta.env.VITE_GSSR_DOMAIN_NAME;
+const port = import.meta.env.VITE_GSSR_PORT;
 
-const socket = io(`ws://${GSSR_DOMAIN}:${GSSR_PORT}`, {
+const socket = io(`ws://${domainName}:${port}`, {
   transports: ["websocket"],
 });
 
