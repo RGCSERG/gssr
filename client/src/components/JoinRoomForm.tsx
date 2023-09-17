@@ -11,7 +11,7 @@ const JoinRoomForm = ({ joinRoom }: Props) => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm<JoinRoomFormData>({
     resolver: zodResolver(JoinRoomSchema),
   });
@@ -29,48 +29,42 @@ const JoinRoomForm = ({ joinRoom }: Props) => {
 
   return (
     <>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <>
-          <div className="mb-3">
-            <label htmlFor="room" className="form-label">
-              Room
-            </label>
-            <input
-              {...register("room")}
-              id="room"
-              type="string"
-              className="form-control"
-              placeholder="Enter room name"
-            />
-            {errors.room && (
-              <p className="text-danger">{errors.room.message}</p>
-            )}
-          </div>
-          <div className="mb-3">
-            <label htmlFor="username" className="form-label">
-              Username
-            </label>
-            <input
-              {...register("username")}
-              id="username"
-              type="text"
-              className="form-control"
-              placeholder="Enter username"
-            />
-            {errors.username && (
-              <p className="text-danger">{errors.username.message}</p>
-            )}
-          </div>
-        </>
+      <form
+        className="flex w-full flex-col items-center justify-center gap-4"
+        onSubmit={handleSubmit(onSubmit)}
+      >
+        <input
+          {...register("room")}
+          id="room"
+          type="string"
+          className="form-input"
+          placeholder="Enter room name"
+        />
+        {errors.room && <p className="text-danger">{errors.room.message}</p>}
+
+        <input
+          {...register("username")}
+          id="username"
+          type="text"
+          className="form-input"
+          placeholder="Enter username"
+        />
+        {errors.username && (
+          <p className="text-danger">{errors.username.message}</p>
+        )}
 
         {/* {error && (
         <Alert key="danger" variant="danger">
           {error}
         </Alert>
       )} */}
-        <div className="d-grid">
-          <button className="btn btn-primary">JOIN ROOM</button>
-        </div>
+
+        <button
+          disabled={!isValid}
+          className="form-button custom-input disabled:opacity-30 disabled:hover:bg-inherit"
+        >
+          JOIN ROOM
+        </button>
       </form>
     </>
   );

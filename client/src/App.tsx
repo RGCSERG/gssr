@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import { io } from "socket.io-client";
+
+import { faviChange } from "./functions/functions";
 import Chat from "./pages/Chat";
 import HomePage from "./pages/HomePage";
 
@@ -12,10 +14,15 @@ const socket = io(`ws://${DOMAIN_NAME}:${PORT}`, {
 });
 
 const App = () => {
+  useEffect(() => {
+    faviChange();
+    document.title = "gssr";
+  }, []);
+
   const [user, setUser] = useState<string>("");
 
   return (
-    <>
+    <div className="font-mono">
       <Routes>
         <Route
           path="/"
@@ -26,7 +33,7 @@ const App = () => {
           element={<Chat socket={socket} user={user} setUser={setUser} />}
         />
       </Routes>
-    </>
+    </div>
   );
 };
 

@@ -95,7 +95,7 @@ const Chat = ({ socket, user, setUser }: Props) => {
       <div className="chat-header mb-3">
         <div className="center-alert">
           <Alert key="info" variant="info">
-            WELCOME TO THE CHAT
+            WELCOME TO ROOM {room}
           </Alert>
         </div>
       </div>

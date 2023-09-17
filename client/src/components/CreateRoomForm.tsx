@@ -2,6 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useForm } from "react-hook-form";
 import { Socket } from "socket.io-client";
+
 import {
   CreateRoomFormData,
   CreateRoomSchema,
@@ -16,7 +17,7 @@ const CreateRoomForm = ({ joinRoom, socket }: Props) => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm<CreateRoomFormData>({
     resolver: zodResolver(CreateRoomSchema),
   });
@@ -39,33 +40,34 @@ const CreateRoomForm = ({ joinRoom, socket }: Props) => {
 
   return (
     <>
-      <form onSubmit={handleSubmit(createRoom)}>
-        <>
-          <div className="mb-3">
-            <label htmlFor="username" className="form-label">
-              Username
-            </label>
-            <input
-              {...register("username")}
-              id="username"
-              type="text"
-              className="form-control"
-              placeholder="Enter username"
-            />
-            {errors.username && (
-              <p className="text-danger">{errors.username.message}</p>
-            )}
-          </div>
-        </>
+      <form
+        className="flex w-full flex-col items-center justify-center gap-4"
+        onSubmit={handleSubmit(createRoom)}
+      >
+        <input
+          {...register("username")}
+          id="username"
+          type="text"
+          className="form-input"
+          placeholder="Enter username"
+        />
+        {errors.username && (
+          <p className="text-danger">{errors.username.message}</p>
+        )}
 
         {/* {error && (
         <Alert key="danger" variant="danger">
           {error}
         </Alert>
       )} */}
-        <div className="d-grid">
-          <button className="btn btn-primary">JOIN ROOM</button>
-        </div>
+
+        <button
+          disabled={!isValid}
+          className="form-button custom-input disabled:opacity-30 disabled:hover:bg-inherit"
+        >
+          JOIN ROOM
+        </button>
+        <div className="form-input opacity-0" />
       </form>
     </>
   );
