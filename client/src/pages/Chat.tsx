@@ -22,7 +22,7 @@ interface Props {
 }
 
 const Chat = ({ socket, user, setUser }: Props) => {
-  const { room } = useParams();
+  const { room } = useParams(); //rooms must be joined with this param for it to work
   const [currentMessage, setCurrentMessage] = useState("");
   const [messageList, setMessageList] = useState<ChatMessage[]>([]);
   const [showModal, setShowModal] = useState(false);
@@ -46,14 +46,14 @@ const Chat = ({ socket, user, setUser }: Props) => {
 
   const hideModal = () => {
     setShowModal(false);
-    if (room) {
-      socket.emit("join_room", room);
-    }
+    socket.emit("join_room", room);
   };
 
   useEffect(() => {
     if (!user) {
       setShowModal(true);
+    } else {
+      socket.emit("join_room", room);
     }
   }, [user]);
 
@@ -61,6 +61,7 @@ const Chat = ({ socket, user, setUser }: Props) => {
     socket.on("receive_message", (data: ChatMessage) => {
       updateMessageList(data);
     });
+    console.log("listening for messages");
   }, [socket]);
 
   const sendMessage = async () => {
