@@ -34,15 +34,6 @@ const JoinRoomForm = ({ joinRoom }: Props) => {
         onSubmit={handleSubmit(onSubmit)}
       >
         <input
-          {...register("room")}
-          id="room"
-          type="string"
-          className="form-input"
-          placeholder="Enter room name"
-        />
-        {errors.room && <p className="text-danger">{errors.room.message}</p>}
-
-        <input
           {...register("username")}
           id="username"
           type="text"
@@ -53,6 +44,14 @@ const JoinRoomForm = ({ joinRoom }: Props) => {
           <p className="text-danger">{errors.username.message}</p>
         )}
 
+        <input
+          {...register("room")}
+          id="room"
+          type="string"
+          className="form-input"
+          placeholder="Enter room name"
+        />
+        {errors.room && <p className="text-danger">{errors.room.message}</p>}
         {/* {error && (
         <Alert key="danger" variant="danger">
           {error}
@@ -63,7 +62,7 @@ const JoinRoomForm = ({ joinRoom }: Props) => {
           disabled={!isValid}
           className="form-button custom-input disabled:opacity-30 disabled:hover:bg-inherit"
         >
-          JOIN ROOM
+          Join Room
         </button>
       </form>
     </>

@@ -65,7 +65,7 @@ const CreateRoomForm = ({ joinRoom, socket }: Props) => {
           disabled={!isValid}
           className="form-button custom-input disabled:opacity-30 disabled:hover:bg-inherit"
         >
-          JOIN ROOM
+          Create Room
         </button>
         <div className="form-input opacity-0" />
       </form>

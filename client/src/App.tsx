@@ -22,7 +22,7 @@ const App = () => {
   const [user, setUser] = useState<string>("");
 
   return (
-    <div className="font-mono">
+    <div className="font-mono h-screen w-screen">
       <Routes>
         <Route
           path="/"
