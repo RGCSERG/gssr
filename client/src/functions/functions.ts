@@ -11,3 +11,19 @@ export const faviChange = () => {
   link.href = "test.svg"
   document.head.appendChild(link)
 }
+
+export function formatTimeWithLeadingZeros() {
+  const now = new Date();
+  const hours = now.getHours();
+  const minutes = now.getMinutes();
+  
+  // Add leading zeros if needed
+  const formattedHours = (hours < 10 ? "0" : "") + hours;
+  const formattedMinutes = (minutes < 10 ? "0" : "") + minutes;
+  
+  // Combine hours and minutes
+  const formattedTime = formattedHours + ":" + formattedMinutes;
+  
+  return formattedTime;
+}
+

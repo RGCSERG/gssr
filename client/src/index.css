@@ -19,7 +19,7 @@
 }
 
 .form-button {
-  @apply text-shadow w-1/2 md:w-1/2 lg:w-1/6 h-16 select-none rounded-lg text-2xl shadow-lg outline outline-4 outline-black hover:bg-gray-200 dark:text-white dark:outline-white dark:hover:bg-gray-800
+  @apply text-shadow w-1/2 md:w-1/2 lg:w-1/6 h-16  rounded-lg text-2xl shadow-lg outline outline-4 outline-black hover:bg-gray-200 dark:text-white dark:outline-white dark:hover:bg-gray-800 focus:outline-black select-none hover:outline focus:ring
 }
 
 .custom-input {
@@ -32,4 +32,14 @@
 .custom-input::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
 }

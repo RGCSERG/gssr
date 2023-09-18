@@ -1,20 +1,12 @@
-import React, { useEffect, useState } from "react";
-import {
-  Alert,
-  Button,
-  Card,
-  Col,
-  Container,
-  Form,
-  Row,
-} from "react-bootstrap";
+import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
-import ScrollToBottom from "react-scroll-to-bottom";
 import { Socket } from "socket.io-client";
 import MakeChangesModal from "../components/MakeChangesModal";
-import { getRandomInt } from "../functions/functions";
+import {
+  formatTimeWithLeadingZeros,
+  getRandomInt,
+} from "../functions/functions";
 import { ChatMessage } from "../interfaces/ChatMessage/ChatMessage";
-
 interface Props {
   setUser: React.Dispatch<React.SetStateAction<string>>;
   socket: Socket;
@@ -26,6 +18,7 @@ const Chat = ({ socket, user, setUser }: Props) => {
   const [currentMessage, setCurrentMessage] = useState("");
   const [messageList, setMessageList] = useState<ChatMessage[]>([]);
   const [showModal, setShowModal] = useState(false);
+  const chatBoxRef = useRef<HTMLSpanElement>(null);
 
   const updateMessageList = (newMessage: ChatMessage) => {
     setMessageList((list) => {
@@ -58,6 +51,13 @@ const Chat = ({ socket, user, setUser }: Props) => {
   }, [user]);
 
   useEffect(() => {
+    const container = chatBoxRef.current;
+    if (container) {
+      container.scrollTop = container.scrollHeight;
+    }
+  }, [messageList]);
+
+  useEffect(() => {
     socket.on("receive_message", (data: ChatMessage) => {
       updateMessageList(data);
     });
@@ -71,13 +71,10 @@ const Chat = ({ socket, user, setUser }: Props) => {
         room: room,
         author: user,
         message: currentMessage,
-        time:
-          new Date(Date.now()).getHours() +
-          ":" +
-          new Date(Date.now()).getMinutes(),
+        time: formatTimeWithLeadingZeros(),
       };
 
-      await socket.emit("send_message", messageData);
+      socket.emit("send_message", messageData);
       setCurrentMessage("");
       updateMessageList(messageData);
     }
@@ -91,77 +88,66 @@ const Chat = ({ socket, user, setUser }: Props) => {
   };
 
   return (
-    <div className="chat-window">
-      <div className="chat-header mb-3">
-        <div className="center-alert">
-          <Alert key="info" variant="info">
-            WELCOME TO ROOM {room}
-          </Alert>
-        </div>
+    <div className="h-full w-full flex justify-center items-center flex-col ">
+      <div className="text-5xl justify-self-start w-1/2 outlin text-left font-semibold ">
+        <h1 className="outline p-3 w-fit bg-white">Lobby {room}</h1>
       </div>
-      <div className="chat-body">
-        <Container>
-          <Row>
-            <Col>
-              <ScrollToBottom className="message-container">
-                {messageList.map((messageContent, index) => (
-                  <div
-                    className="message mb-3"
-                    id={user === messageContent.author ? "you" : "other"}
-                    key={index}
-                  >
-                    <Card>
-                      <Card.Body>
-                        <Card.Text>{messageContent.message}</Card.Text>
-                      </Card.Body>
-                      <Card.Footer>
-                        <small className="text-muted">
-                          {messageContent.time} by {messageContent.author}
-                        </small>
-                      </Card.Footer>
-                    </Card>
-                  </div>
-                ))}
-              </ScrollToBottom>
-            </Col>
-          </Row>
-        </Container>
+      <span
+        className="w-1/2 bg-white h-1/2  overflow-y-scroll no-scrollbar outline  pt-4 flex flex-col px-4"
+        ref={chatBoxRef}
+      >
+        {messageList.map((messageContent, index) => (
+          <div
+            className={`${
+              user === messageContent.author ? "self-start" : "self-end"
+            }`}
+          >
+            <p className="mb-1  font-semibold">
+              {user === messageContent.author ? "you" : messageContent.author}
+            </p>
+            <div
+              className={`outline rounded-sm w-fit p-3 mb-4 text-lg
+              flex items-center justify-between gap-8
+              ${user === messageContent.author ? " bg-slate-200" : "self-end"}`}
+              id={user === messageContent.author ? "you" : "other"}
+              key={index}
+            >
+              <p>{messageContent.message}</p>
+              <p className="opacity-50"> {messageContent.time} </p>
+            </div>
+          </div>
+        ))}
+      </span>
+      <div className="flex w-1/2 items-center justify-between text-xl outline">
+        <input
+          className="w-full h-full p-3 bg-none outline-none"
+          type="text"
+          value={currentMessage}
+          placeholder="Enter a message..."
+          disabled={!user === true}
+          onChange={(event) => {
+            setCurrentMessage(event.target.value);
+          }}
+          onKeyDown={handleKeyDown} // Use onKeyDown event handler
+        />
+
+        <button
+          className="p-3 outline-none h-full bg-white font-semibold"
+          onClick={sendMessage}
+          disabled={!user === true}
+        >
+          Send
+        </button>
       </div>
-      <div className="chat-footer">
-        <Container>
-          <Row>
-            <Col>
-              <Form.Control
-                type="text"
-                value={currentMessage}
-                placeholder="Hey..."
-                disabled={!user === true}
-                onChange={(event) => {
-                  setCurrentMessage(event.target.value);
-                }}
-                onKeyDown={handleKeyDown} // Use onKeyDown event handler
-              />
-            </Col>
-            <Col xs="auto">
-              <Button
-                onClick={sendMessage}
-                variant="primary"
-                disabled={!user === true}
-              >
-                &#9658;
-              </Button>
-            </Col>
-          </Row>
-        </Container>
-        {showModal && (
-          <MakeChangesModal
-            handleClose={hideModal}
-            title="You are not logged in"
-            body="sign up statement"
-            setUser={setUser}
-          />
-        )}
-      </div>
+
+      {showModal && (
+        <MakeChangesModal
+          handleClose={hideModal}
+          title="You are not logged in"
+          body="sign up statement"
+          setUser={setUser}
+        />
+      )}
     </div>
   );
 };
