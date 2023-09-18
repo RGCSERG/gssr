@@ -1,11 +1,12 @@
 {
   "name": "gssr",
   "version": "1.0.0",
+  "type": "module",
   "description": "similar to jackbox but with different concepts for the main attention point",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon index.js"
+    "start": "nodemon index2.js"
   },
   "author": "",
   "license": "ISC",

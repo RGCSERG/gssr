@@ -1,17 +1,40 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Socket } from "socket.io-client";
 import CreateRoomForm from "../components/CreateRoomForm";
 import Credits from "../components/Credits";
 import JoinRoomForm from "../components/JoinRoomForm";
+import { createRoom, joinRoom } from "../functions/roomService";
 
 interface Props {
-  socket: Socket;
   setUser: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const HomePage = ({ socket, setUser }: Props) => {
+const HomePage = ({ setUser }: Props) => {
   const [joiningRoom, setJoiningRoom] = useState<Boolean>(false);
+
+  const handleCreateRoom = async (username: string) => {
+    const room = await createRoom();
+    setUser(username);
+    if (room) {
+      console.log(`Connected to ${room} as ${username}`);
+      navigate(`/room/${room}`);
+    }
+  };
+
+  const handleJoinRoom = (roomCode: string, username: string) => {
+    setUser(username);
+
+    joinRoom(roomCode)
+      .then((room) => {
+        // Room exists, handle it here
+        console.log(room);
+        navigate(`/room/${room}`);
+      })
+      .catch((error) => {
+        // Room does not exist or there was an error, handle the error here
+        console.error(error);
+      });
+  };
 
   useEffect(() => {
     //works
@@ -25,13 +48,6 @@ const HomePage = ({ socket, setUser }: Props) => {
   };
 
   const navigate = useNavigate();
-
-  const joinRoom = (roomCode: number, username: string) => {
-    setUser(username);
-    console.log(`Connected to ${roomCode} as ${username}`);
-    navigate(`/room/${roomCode}`);
-    // socket.emit("join_room", roomCode);
-  };
 
   return (
     <>
@@ -51,7 +67,7 @@ const HomePage = ({ socket, setUser }: Props) => {
               </button>
               <button>Join Room</button>
             </div>
-            <JoinRoomForm joinRoom={joinRoom} />
+            <JoinRoomForm joinRoom={handleJoinRoom} />
           </>
         ) : (
           <>
@@ -61,7 +77,7 @@ const HomePage = ({ socket, setUser }: Props) => {
                 Join Room
               </button>
             </div>
-            <CreateRoomForm socket={socket} joinRoom={joinRoom} />
+            <CreateRoomForm createRoom={handleCreateRoom} />
           </>
         )}
       </div>
