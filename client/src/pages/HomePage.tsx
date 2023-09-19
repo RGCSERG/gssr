@@ -11,7 +11,6 @@ interface Props {
 
 const HomePage = ({ setUser }: Props) => {
   const [joiningRoom, setJoiningRoom] = useState<Boolean>(false);
-  const [error, setError] = useState("");
 
   const handleCreateRoom = async (username: string) => {
     const room = await createRoom();
@@ -78,7 +77,6 @@ const HomePage = ({ setUser }: Props) => {
         ) : (
           <CreateRoomForm createRoom={handleCreateRoom} />
         )}
-        {error && <p>{error}</p>}
       </div>
       <Credits />
     </>
