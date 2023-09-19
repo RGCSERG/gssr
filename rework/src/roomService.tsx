@@ -1,4 +1,5 @@
 import { io, Socket } from "socket.io-client";
+import { ChatMessage } from "./interfacce";
 
 export let socket: Socket | null = null;
 
@@ -63,8 +64,8 @@ export const leaveRoom = (roomName: string) => {
   }
 };
 
-export const sendChatMessage = (roomName: string, message: string) => {
+export const sendChatMessage = (message: ChatMessage) => {
   if (socket) {
-    socket.emit("chat_message", roomName, message);
+    socket.emit("chat_message", message);
   }
 };

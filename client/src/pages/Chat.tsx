@@ -1,19 +1,18 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Socket } from "socket.io-client";
 import MakeChangesModal from "../components/MakeChangesModal";
 import {
   formatTimeWithLeadingZeros,
   getRandomInt,
 } from "../functions/functions";
 import { ChatMessage } from "../interfaces/ChatMessage/ChatMessage";
+import { joinRoom, sendChatMessage, socket } from "../functions/roomService";
 interface Props {
   setUser: React.Dispatch<React.SetStateAction<string>>;
-  socket: Socket;
   user: string;
 }
 
-const Chat = ({ socket, user, setUser }: Props) => {
+const Chat = ({ user, setUser }: Props) => {
   const { room } = useParams(); //rooms must be joined with this param for it to work
   const [currentMessage, setCurrentMessage] = useState("");
   const [messageList, setMessageList] = useState<ChatMessage[]>([]);
@@ -39,30 +38,36 @@ const Chat = ({ socket, user, setUser }: Props) => {
 
   const hideModal = () => {
     setShowModal(false);
-    socket.emit("join_room", room);
+  };
+
+  const handleJoinRoom = () => {
+    if (room !== undefined) {
+      joinRoom(room);
+    }
   };
 
   useEffect(() => {
     if (!user) {
       setShowModal(true);
     } else {
-      socket.emit("join_room", room);
+      handleJoinRoom();
     }
-  }, [user]);
+  }, [user, room]);
 
   useEffect(() => {
+    if (socket) {
+      socket.on("chatted_message", updateMessageList);
+
+      // Clean up the event listener when the component unmounts
+      return () => {
+        socket?.off("chatted_message", updateMessageList);
+      };
+    }
     const container = chatBoxRef.current;
     if (container) {
       container.scrollTop = container.scrollHeight;
     }
   }, [messageList]);
-
-  useEffect(() => {
-    socket.on("receive_message", (data: ChatMessage) => {
-      updateMessageList(data);
-    });
-    console.log("listening for messages");
-  }, [socket]);
 
   const sendMessage = async () => {
     if (currentMessage.trim() !== "" && room !== undefined) {
@@ -74,7 +79,7 @@ const Chat = ({ socket, user, setUser }: Props) => {
         time: formatTimeWithLeadingZeros(),
       };
 
-      socket.emit("send_message", messageData);
+      sendChatMessage(messageData);
       setCurrentMessage("");
       updateMessageList(messageData);
     }
@@ -98,6 +103,7 @@ const Chat = ({ socket, user, setUser }: Props) => {
       >
         {messageList.map((messageContent, index) => (
           <div
+            key={messageContent.id}
             className={`${
               user === messageContent.author ? "self-start" : "self-end"
             }`}

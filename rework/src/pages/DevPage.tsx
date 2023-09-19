@@ -6,11 +6,17 @@ import {
   leaveRoom,
   sendChatMessage,
 } from "../roomService";
+import { ChatMessage } from "../interfacce";
+import {
+  formatTimeWithLeadingZeros,
+  getRandomInt,
+} from "../functions/functions";
 
 const ExampleComponent: React.FC = () => {
   const [roomName, setRoomName] = useState("");
   const [message, setMessage] = useState("");
-  const [chatMessages, setChatMessages] = useState<string[]>([]); // Array to store chat messages
+  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]); // Array to store chat messages
+  const [messageIds, setMessageIds] = useState<Set<number>>(new Set()); // Set to track message IDs
 
   const handleCreateRoom = async () => {
     const room = await createRoom();
@@ -28,21 +34,31 @@ const ExampleComponent: React.FC = () => {
   };
 
   const handleSendMessage = () => {
-    // Send the message
-    sendChatMessage(roomName, message);
+    if (message.trim() !== "" && roomName !== undefined) {
+      const newMessage: ChatMessage = {
+        id: getRandomInt(1000000000000, 9999999999999),
+        room: roomName,
+        message: message,
+        time: formatTimeWithLeadingZeros(),
+      };
+      // Send the message
+      sendChatMessage(newMessage);
 
-    // Add the sent message to the chatMessages array
-    setChatMessages((prevMessages) => [...prevMessages, message]);
-
-    // Clear the message input field
-    setMessage("");
+      // Clear the message input field
+      setMessage("");
+    }
   };
 
   useEffect(() => {
     if (socket) {
-      const handleChatMessage = (receivedMessage: string) => {
-        // Add the received message to the chatMessages array
-        setChatMessages((prevMessages) => [...prevMessages, receivedMessage]);
+      const handleChatMessage = (receivedMessage: ChatMessage) => {
+        console.log(receivedMessage);
+        // Add the received message to the chatMessages array if it's not already present
+        if (!messageIds.has(receivedMessage.id)) {
+          setChatMessages((prevMessages) => [...prevMessages, receivedMessage]);
+          // Add the message ID to the set to mark it as received
+          setMessageIds((prevIds) => new Set(prevIds).add(receivedMessage.id));
+        }
       };
 
       // Subscribe to the "chatted_message" event
@@ -53,7 +69,7 @@ const ExampleComponent: React.FC = () => {
         socket?.off("chatted_message", handleChatMessage);
       };
     }
-  }, []);
+  }, [chatMessages]);
 
   return (
     <div>
@@ -78,8 +94,10 @@ const ExampleComponent: React.FC = () => {
       <div>
         <h2>Chat Messages</h2>
         <ul>
-          {chatMessages.map((msg, index) => (
-            <li key={index}>{msg}</li>
+          {chatMessages.map((msg) => (
+            <li key={msg.id}>
+              <strong>{msg.room}:</strong> {msg.message}
+            </li>
           ))}
         </ul>
       </div>

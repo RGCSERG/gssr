@@ -1,6 +1,7 @@
 import { io, Socket } from "socket.io-client";
+import { ChatMessage } from "../interfaces/ChatMessage/ChatMessage";
 
-let socket: Socket | null = null;
+export let socket: Socket | null = null;
 
 const DOMAIN_NAME = import.meta.env.VITE_GSSR_DOMAIN_NAME;
 const PORT = import.meta.env.VITE_GSSR_PORT;
@@ -63,8 +64,8 @@ export const leaveRoom = (roomName: string) => {
   }
 };
 
-export const sendChatMessage = (roomName: string, message: string) => {
+export const sendChatMessage = (message: ChatMessage) => {
   if (socket) {
-    socket.emit("chat_message", roomName, message);
+    socket.emit("chat_message", message);
   }
 };

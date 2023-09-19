@@ -91,12 +91,13 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("chat_message", (roomName, message) => {
+  socket.on("chat_message", (message) => {
+    console.log(message)
     // Send the message to all clients in the specified room
-    io.to(roomName).emit("chatted_message", message);
+    io.to(message.room).emit("chatted_message", message);
 
     console.log(
-      `Socket ${socket.id} sent message in room ${roomName}: ${message}`
+      `Socket ${socket.id} sent message in room ${message.room}: ${message}`
     );
   });
 
