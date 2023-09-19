@@ -19,7 +19,7 @@ const io = new Server(server, {
 });
 
 io.on("connection", (socket) => {
-  function leaveRoomAndCheckIfEmpty(roomName, socketId) {
+  function leaveRoomAndCheckIfEmpty(roomName, socketId, socket, roomOccupants) {
     // Leave the specified room
     socket.leave(roomName);
 
@@ -30,7 +30,7 @@ io.on("connection", (socket) => {
       );
 
       // Emit the updated room occupants list to all clients in the room
-      io.to(roomName).emit("room occupants", roomOccupants[roomName]);
+      socket.to(roomName).emit("room occupants", roomOccupants[roomName]);
 
       // Check if the room is empty after removing the socket
       if (roomOccupants[roomName].length === 0) {
@@ -97,18 +97,18 @@ io.on("connection", (socket) => {
     io.to(message.room).emit("chatted_message", message);
 
     console.log(
-      `Socket ${socket.id} sent message in room ${message.room}: ${message}`
+      `Socket ${socket.id} sent message in room ${message.room}: ${message.message}`
     );
   });
 
   socket.on("leave_room", (roomName) => {
-    leaveRoomAndCheckIfEmpty(roomName, socket.id);
+    leaveRoomAndCheckIfEmpty(roomName, socket.id, socket, roomOccupants);
   });
 
   socket.on("disconnect", () => {
     console.log(`User Disconnected: ${socket.id}`);
     for (const roomName in roomOccupants) {
-      leaveRoomAndCheckIfEmpty(roomName, socket.id);
+      leaveRoomAndCheckIfEmpty(roomName, socket.id, socket, roomOccupants);
     }
   });
 });
