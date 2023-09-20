@@ -2,6 +2,7 @@ import express from "express"; // Import Express
 import http from "http";
 import { Server } from "socket.io";
 import cors from "cors";
+import { insertMessage } from "./database";
 
 const app = express();
 
@@ -92,8 +93,9 @@ io.on("connection", (socket) => {
   });
 
   socket.on("chat_message", (message) => {
-    console.log(message)
+    console.log(message);
     // Send the message to all clients in the specified room
+    // insertMessage(message.room, message.author, message.message);
     io.to(message.room).emit("chatted_message", message);
 
     console.log(
