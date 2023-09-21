@@ -14,11 +14,19 @@ const Credits = () => {
       </a>
       <p className=" dark:text-white sm:text-xl">
         © 2023{" "}
-        <a className="credit-text" href="https://github.com/RGCSERG">
+        <a
+          className="credit-text"
+          href="https://github.com/RGCSERG"
+          target="_blank"
+        >
           RGCSERG
         </a>{" "}
         &{" "}
-        <a className="credit-text" href="https://github.com/yonahadev">
+        <a
+          className="credit-text"
+          href="https://github.com/yonahadev"
+          target="_blank"
+        >
           yonahadev
         </a>
       </p>
