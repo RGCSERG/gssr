@@ -8,11 +8,11 @@ const URL = `postgres://${PGUSER}:${PGPASSWORD}@${PGHOST}/${PGDATABASE}?options=
 
 const sql = postgres(URL, { ssl: "require" });
 
-export async function insertMessage(roomName, senderId, message) {
+export async function insertMessage(message) {
   try {
     const insertQuery = sql`
-      INSERT INTO messages (room_name, sender_id, message)
-      VALUES (${roomName}, ${senderId}, ${message})
+      INSERT INTO messages (author, message, room)
+      VALUES (${1}, ${message.message}, ${message.room})
       RETURNING *
     `;
 
@@ -29,3 +29,5 @@ export async function insertMessage(roomName, senderId, message) {
     throw error; // Rethrow the error to handle it elsewhere if needed
   }
 }
+
+// export async function getUser()

@@ -50,9 +50,8 @@ export const sendMessage = async (
       message: currentMessage,
       time: formatTimeWithLeadingZeros(),
     };
-
-    sendChatMessage(messageData);
     updateMessageList(messageData, setMessageList);
+    sendChatMessage(messageData);
   }
 };
 

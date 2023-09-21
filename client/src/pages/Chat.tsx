@@ -12,7 +12,7 @@ interface Props {
 }
 
 const Chat = ({ user, setUser }: Props) => {
-  const { room } = useParams(); //rooms must be joined with this param for it to work
+  const { room } = useParams();
   const [showModal, setShowModal] = useState(false);
   const [messageList, setMessageList] = useState<ChatMessage[]>([]);
 
@@ -20,23 +20,27 @@ const Chat = ({ user, setUser }: Props) => {
     setShowModal(false);
   };
 
-  const handleJoinRoom = () => {
-    if (room !== undefined) {
-      joinRoom(room);
-    }
-  };
-
   useEffect(() => {
-    if (!user) {
-      setShowModal(true);
-    } else {
-      handleJoinRoom();
-    }
+    const setupChatRoom = async () => {
+      try {
+        if (!user) {
+          setShowModal(true);
+        } else if (room !== undefined) {
+          // Join the room and retrieve message history
+          const messageHistory = await joinRoom(room);
+          setMessageList(messageHistory);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    setupChatRoom();
   }, [user, room]);
 
   return (
-    <div className="h-full w-full flex justify-center items-center flex-col ">
-      <div className="text-5xl justify-self-start w-1/2 outlin text-left font-semibold ">
+    <div className="h-full w-full flex justify-center items-center flex-col">
+      <div className="text-5xl justify-self-start w-1/2 outline text-left font-semibold">
         <h1 className="outline p-3 w-fit bg-white">Lobby {room}</h1>
       </div>
 

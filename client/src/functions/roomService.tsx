@@ -29,31 +29,36 @@ export const createRoom = () => {
 };
 
 export const joinRoom = (roomName: string) => {
-  return new Promise((resolve, reject) => {
+  return new Promise<ChatMessage[]>(async (resolve, reject) => {
     if (socket) {
-      let roomOccupantsReceived = false;
-
       // Emit the "join_room" event
       socket.emit("join_room", roomName);
 
       // Listen for "room_occupants" event
       socket.once("room_occupants", (roomOccupants) => {
-        roomOccupantsReceived = true;
         if (roomOccupants) {
-          resolve(roomOccupants); // Room exists, resolve the promise with room occupants
         } else {
-          reject(`Room ${roomName} does not exist`); // Room does not exist, reject the promise with an error
+          reject(`Room ${roomName} does not exist`);
         }
       });
 
       // Listen for "room_does_not_exist" event
       socket.once("room_does_not_exist", () => {
-        if (!roomOccupantsReceived) {
-          reject(`Room ${roomName} does not exist`); // Room does not exist, reject the promise with an error
+        reject(`Room ${roomName} does not exist`);
+      });
+
+      // Listen for "message_history" event
+      socket.once("message_history", (history) => {
+        if (history) {
+          // Resolve the promise with room occupants and message history
+          resolve(history);
+        } else {
+          // If there's no message history, resolve with just room occupants
+          resolve([]);
         }
       });
     } else {
-      reject("Socket is not available"); // Socket is not available, reject the promise with an error
+      reject("Room is not available");
     }
   });
 };

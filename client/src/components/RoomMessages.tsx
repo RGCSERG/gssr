@@ -11,9 +11,16 @@ interface Props {
 
 const RoomMessages = ({ user, messageList, setMessageList }: Props) => {
   const chatBoxRef = useRef<HTMLSpanElement>(null);
+  const removeMessagesWithIdZero = () => {
+    const filteredMessages = messageList.filter(
+      (message) => message.id !== 0.1
+    );
+    setMessageList(filteredMessages);
+  };
   useEffect(() => {
     if (socket) {
       socket.on("chatted_message", (message) => {
+        removeMessagesWithIdZero();
         updateMessageList(message, setMessageList);
       });
 
