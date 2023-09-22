@@ -11,13 +11,15 @@ const messageHistory = {}; // Store message history for each room
 
 app.use(cors());
 
+const server = http.createServer(app);
+
 function getLatestMessages(roomName) {
   const messages = messageHistory[roomName] || [];
   const startIndex = Math.max(messages.length - 20, 0); // Start index for the last 20 messages
   return messages.slice(startIndex);
 }
 
-const io = new Server({
+const io = new Server(server, {
   cors: {
     origin: "*", // Allow connections from all origins
     methods: ["GET", "POST"],
