@@ -1,7 +1,8 @@
-import { useState } from "react";
-import { useParams } from "react-router-dom";
-import CreateRoomMessage from "../components/CreateRoomMessage";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import ClipboardCopyButton from "../components/ClipboardCopyButton";
 import MakeChangesModal from "../components/MakeChangesModal";
+import MessageInputBox from "../components/MessageInputBox";
 import RoomMessages from "../components/RoomMessages";
 import { initialiseRoom } from "../hooks/UseRoom";
 import { ChatMessage } from "../interfaces/ChatMessage/ChatMessage";
@@ -15,15 +16,27 @@ const Chat = ({ user, setUser }: Props) => {
   const { room } = useParams();
   const [showModal, setShowModal] = useState(false);
   const [messageList, setMessageList] = useState<ChatMessage[]>([]);
+  const navigate = useNavigate();
 
   const hideModal = () => setShowModal(false);
 
-  initialiseRoom(setShowModal, setMessageList, room, user);
+  initialiseRoom(setShowModal, setMessageList, user, room);
 
   return (
     <div className="h-full w-full flex justify-center items-center flex-col">
-      <div className="text-5xl justify-self-start w-1/2 outline text-left font-semibold">
-        <h1 className="outline p-3 w-fit bg-white">Lobby {room}</h1>
+      <div className="flex gap-5 items-center justify-self-start w-1/2 text-left">
+        <h1 className="font-semibold text-5xl outline p-3 w-fit bg-white">
+          Lobby {room}
+        </h1>
+        <ClipboardCopyButton />
+        <button
+          className="text-2xl underline text-blue-500"
+          onClick={() => {
+            navigate(`/`);
+          }}
+        >
+          Return home
+        </button>
       </div>
 
       <RoomMessages
@@ -32,15 +45,10 @@ const Chat = ({ user, setUser }: Props) => {
         setMessageList={setMessageList}
       />
 
-      <CreateRoomMessage user={user} setMessageList={setMessageList} />
+      <MessageInputBox user={user} setMessageList={setMessageList} />
 
       {showModal && (
-        <MakeChangesModal
-          handleClose={hideModal}
-          title="You are not logged in"
-          body="sign up statement"
-          setUser={setUser}
-        />
+        <MakeChangesModal handleClose={hideModal} setUser={setUser} />
       )}
     </div>
   );
