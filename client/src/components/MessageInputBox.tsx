@@ -8,7 +8,7 @@ interface Props {
   setMessageList: React.Dispatch<React.SetStateAction<ChatMessage[]>>;
 }
 
-const CreateRoomMessage = ({ user, setMessageList }: Props) => {
+const MessageInputBox = ({ user, setMessageList }: Props) => {
   const { room } = useParams();
   const [currentMessage, setCurrentMessage] = useState("");
 
@@ -28,7 +28,7 @@ const CreateRoomMessage = ({ user, setMessageList }: Props) => {
   const handleKeydown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
       event.preventDefault(); // Prevent the default behavior of Enter (e.g., form submission)
-      handleMessageSend;
+      handleMessageSend();
     }
   };
   return (
@@ -56,4 +56,4 @@ const CreateRoomMessage = ({ user, setMessageList }: Props) => {
   );
 };
 
-export default CreateRoomMessage;
+export default MessageInputBox;
