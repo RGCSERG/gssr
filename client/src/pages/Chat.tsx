@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import { useParams } from "react-router-dom";
-import MakeChangesModal from "../components/MakeChangesModal";
-import { ChatMessage } from "../interfaces/ChatMessage/ChatMessage";
-import { joinRoom } from "../functions/roomService";
-import RoomMessages from "../components/RoomMessages";
 import CreateRoomMessage from "../components/CreateRoomMessage";
+import MakeChangesModal from "../components/MakeChangesModal";
+import RoomMessages from "../components/RoomMessages";
+import { initialiseRoom } from "../hooks/UseRoom";
+import { ChatMessage } from "../interfaces/ChatMessage/ChatMessage";
 
 interface Props {
   setUser: React.Dispatch<React.SetStateAction<string>>;
@@ -16,27 +16,9 @@ const Chat = ({ user, setUser }: Props) => {
   const [showModal, setShowModal] = useState(false);
   const [messageList, setMessageList] = useState<ChatMessage[]>([]);
 
-  const hideModal = () => {
-    setShowModal(false);
-  };
+  const hideModal = () => setShowModal(false);
 
-  useEffect(() => {
-    const setupChatRoom = async () => {
-      try {
-        if (!user) {
-          setShowModal(true);
-        } else if (room !== undefined) {
-          // Join the room and retrieve message history
-          const messageHistory = await joinRoom(room);
-          setMessageList(messageHistory);
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    setupChatRoom();
-  }, [user, room]);
+  initialiseRoom(setShowModal, setMessageList, room, user);
 
   return (
     <div className="h-full w-full flex justify-center items-center flex-col">

@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
-import { sendMessage } from "../functions/functions";
+import { sendMessage, updateMessageList } from "../hooks/UseChat";
 import { ChatMessage } from "../interfaces/ChatMessage/ChatMessage";
-import { updateMessageList } from "../functions/functions";
 
 interface Props {
   user: string;

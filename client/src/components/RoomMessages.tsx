@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
-import { socket } from "../functions/roomService";
+import { updateMessageList } from "../hooks/UseChat";
+import { socket } from "../hooks/UseRoom";
 import { ChatMessage } from "../interfaces/ChatMessage/ChatMessage";
-import { updateMessageList } from "../functions/functions";
 
 interface Props {
   user: string;

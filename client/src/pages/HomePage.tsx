@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import CreateRoomForm from "../components/CreateRoomForm";
 import Credits from "../components/Credits";
 import JoinRoomForm from "../components/JoinRoomForm";
-import { createRoom, joinRoom } from "../functions/roomService";
+import { createRoom, joinRoom } from "../hooks/UseRoom";
 
 interface Props {
   setUser: React.Dispatch<React.SetStateAction<string>>;
@@ -60,13 +60,13 @@ const HomePage = ({ setUser }: Props) => {
         </p>
         <div className="decoration-white flex justify-center items-center gap-4 text-xl md:text-3xl underline mb-4 border-black font-semibold">
           <button
-            className={`text-white ${joiningRoom ? "opacity-30" : ""}`}
+            className={`dark:text-white ${joiningRoom ? "opacity-30" : ""}`}
             onClick={joiningRoom ? adjustUI : undefined}
           >
             Create Room
           </button>
           <button
-            className={`text-white ${!joiningRoom ? "opacity-30" : ""}`}
+            className={`dark:text-white ${!joiningRoom ? "opacity-30" : ""}`}
             onClick={!joiningRoom ? adjustUI : undefined}
           >
             Join Room

@@ -1,13 +1,13 @@
+import { useEffect } from "react";
 import { io, Socket } from "socket.io-client";
 import { ChatMessage } from "../interfaces/ChatMessage/ChatMessage";
 
 export let socket: Socket | null = null;
 
-const DOMAIN_NAME = import.meta.env.VITE_GSSR_DOMAIN_NAME;
-const PORT = import.meta.env.VITE_GSSR_PORT;
+const CONNECTION_STRING = import.meta.env.VITE_CONNECTION_STRING;
 
 export const connectToSocketServer = () => {
-  socket = io(`${DOMAIN_NAME}:${PORT}`, {
+  socket = io(CONNECTION_STRING, {
     transports: ["websocket"],
   });
 
@@ -69,8 +69,27 @@ export const leaveRoom = (roomName: string) => {
   }
 };
 
-export const sendChatMessage = (message: ChatMessage) => {
-  if (socket) {
-    socket.emit("chat_message", message);
-  }
+export const initialiseRoom = (
+  setShowModal: React.Dispatch<React.SetStateAction<boolean>>,
+  setMessageList: React.Dispatch<React.SetStateAction<ChatMessage[]>>,
+  room?: string,
+  user?: string | null
+) => {
+  useEffect(() => {
+    const setupChatRoom = async () => {
+      try {
+        if (!user) {
+          setShowModal(true);
+        } else if (room !== undefined) {
+          // Join the room and retrieve message history
+          const messageHistory = await joinRoom(room);
+          setMessageList(messageHistory);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    setupChatRoom();
+  }, [user, room]);
 };

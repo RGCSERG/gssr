@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import { faviChange } from "./functions/functions";
+import { connectToSocketServer } from "./hooks/UseRoom";
 import Chat from "./pages/Chat";
 import HomePage from "./pages/HomePage";
-import { connectToSocketServer } from "./functions/roomService";
 
 connectToSocketServer();
 
 const App = () => {
   useEffect(() => {
     faviChange();
-    document.title = "gssr";
+    document.title = "the middest chatroom";
   }, []);
 
   const [user, setUser] = useState<string>("");
