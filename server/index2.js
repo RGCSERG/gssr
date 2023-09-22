@@ -21,10 +21,11 @@ function getLatestMessages(roomName) {
 
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5713/",
+    origin: "*", // Allow connections from all origins
     methods: ["GET", "POST"],
   },
 });
+
 
 io.on("connection", (socket) => {
   function leaveRoomAndCheckIfEmpty(roomName, socketId, socket, roomOccupants) {
@@ -137,6 +138,8 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(5174, () => {
-  console.log("SERVER RUNNING");
+const PORT = process.env.PORT || 5174;
+
+server.listen(PORT, () => {
+  console.log(`SERVER RUNNING on port ${PORT}`);
 });
