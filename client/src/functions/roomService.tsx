@@ -7,7 +7,7 @@ const DOMAIN_NAME = import.meta.env.VITE_GSSR_DOMAIN_NAME;
 const PORT = import.meta.env.VITE_GSSR_PORT;
 
 export const connectToSocketServer = () => {
-  socket = io(`${DOMAIN_NAME}:${PORT}`, {
+  socket = io(`ws://${DOMAIN_NAME}:${PORT}`, {
     transports: ["websocket"],
   });
 
