@@ -4,10 +4,10 @@ import { ChatMessage } from "../interfaces/ChatMessage/ChatMessage";
 export let socket: Socket | null = null;
 
 const DOMAIN_NAME = import.meta.env.VITE_GSSR_DOMAIN_NAME;
-const PORT = import.meta.env.VITE_GSSR_PORT;
 
 export const connectToSocketServer = () => {
-  socket = io(`ws://${DOMAIN_NAME}:${PORT}`, {
+  console.log(`trying to connect to ${DOMAIN_NAME}`);
+  socket = io(`${DOMAIN_NAME}`, {
     transports: ["websocket"],
   });
 
