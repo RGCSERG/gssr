@@ -1,7 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useForm } from "react-hook-form";
-import { Socket } from "socket.io-client";
 
 import {
   CreateRoomFormData,
@@ -9,11 +8,9 @@ import {
 } from "../interfaces/Rooms/CreateRoom";
 
 interface Props {
-  joinRoom: (roomCode: number, username: string) => void;
-  socket: Socket;
+  createRoom: (username: string) => void;
 }
-
-const CreateRoomForm = ({ joinRoom, socket }: Props) => {
+const CreateRoomForm = ({ createRoom }: Props) => {
   const {
     register,
     handleSubmit,
@@ -22,27 +19,15 @@ const CreateRoomForm = ({ joinRoom, socket }: Props) => {
     resolver: zodResolver(CreateRoomSchema),
   });
 
-  const createRoom = async (data: CreateRoomFormData) => {
-    const roomCode = await generateRoomCode();
-    typeof roomCode === "number" ? joinRoom(roomCode, data.username) : null;
-  };
-
-  const generateRoomCode = async () => {
-    console.log("Send create room request");
-
-    return new Promise((resolve) => {
-      socket.on("created_room", (receivedRoomCode: number) => {
-        resolve(receivedRoomCode);
-      });
-      socket.emit("create_room");
-    });
+  const handleCreateRoom = async (data: CreateRoomFormData) => {
+    createRoom(data.username);
   };
 
   return (
     <>
       <form
         className="flex w-full flex-col items-center justify-center gap-4"
-        onSubmit={handleSubmit(createRoom)}
+        onSubmit={handleSubmit(handleCreateRoom)}
       >
         <input
           {...register("username")}

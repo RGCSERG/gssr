@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { JoinRoomFormData, JoinRoomSchema } from "../interfaces/Rooms/JoinRoom";
 
 interface Props {
-  joinRoom: (roomCode: number, username: string) => void;
+  joinRoom: (roomCode: string, username: string) => void;
 }
 
 const JoinRoomForm = ({ joinRoom }: Props) => {
@@ -17,8 +17,7 @@ const JoinRoomForm = ({ joinRoom }: Props) => {
   });
 
   const onSubmit = (data: JoinRoomFormData) => {
-    console.log(typeof data.room);
-    const roomNum = parseInt(data.room);
+    const roomNum = data.room;
     if (typeof roomNum === "number") {
       ("joining an existing room");
       joinRoom(roomNum, data.username);

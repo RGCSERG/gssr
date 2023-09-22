@@ -1,17 +1,40 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Socket } from "socket.io-client";
 import CreateRoomForm from "../components/CreateRoomForm";
 import Credits from "../components/Credits";
 import JoinRoomForm from "../components/JoinRoomForm";
+import { createRoom, joinRoom } from "../functions/roomService";
 
 interface Props {
-  socket: Socket;
   setUser: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const HomePage = ({ socket, setUser }: Props) => {
+const HomePage = ({ setUser }: Props) => {
   const [joiningRoom, setJoiningRoom] = useState<Boolean>(false);
+
+  const handleCreateRoom = async (username: string) => {
+    const room = await createRoom();
+    setUser(username);
+    if (room) {
+      console.log(`Connected to ${room} as ${username}`);
+      navigate(`/room/${room}`);
+    }
+  };
+
+  const handleJoinRoom = (roomCode: string, username: string) => {
+    setUser(username);
+
+    joinRoom(roomCode)
+      .then((room) => {
+        // Room exists, handle it here
+        console.log(room);
+        navigate(`/room/${room}`);
+      })
+      .catch((error) => {
+        // Room does not exist or there was an error, handle the error here
+        console.error(error);
+      });
+  };
 
   useEffect(() => {
     //works
@@ -26,13 +49,6 @@ const HomePage = ({ socket, setUser }: Props) => {
 
   const navigate = useNavigate();
 
-  const joinRoom = (roomCode: number, username: string) => {
-    setUser(username);
-    console.log(`Connected to ${roomCode} as ${username}`);
-    navigate(`/room/${roomCode}`);
-    // socket.emit("join_room", roomCode);
-  };
-
   return (
     <>
       <div className="flex h-screen flex-col items-center justify-center font-mono dark:bg-black">
@@ -42,27 +58,24 @@ const HomePage = ({ socket, setUser }: Props) => {
         <p className="text-shadow mb-4 text-center text-sm motion-safe:animate-bounce dark:text-white md:text-3xl line-through">
           This site doesn't actually do anything.
         </p>
-
-        {joiningRoom === true ? (
-          <>
-            <div className="flex justify-center items-center gap-4  text-2xl md:text-3xl mb-4 underline font-semibold">
-              <button className="opacity-30" onClick={adjustUI}>
-                Create Room
-              </button>
-              <button>Join Room</button>
-            </div>
-            <JoinRoomForm joinRoom={joinRoom} />
-          </>
+        <div className="decoration-white flex justify-center items-center gap-4 text-xl md:text-3xl underline mb-4 border-black font-semibold">
+          <button
+            className={`text-white ${joiningRoom ? "opacity-30" : ""}`}
+            onClick={joiningRoom ? adjustUI : undefined}
+          >
+            Create Room
+          </button>
+          <button
+            className={`text-white ${!joiningRoom ? "opacity-30" : ""}`}
+            onClick={!joiningRoom ? adjustUI : undefined}
+          >
+            Join Room
+          </button>
+        </div>
+        {joiningRoom ? (
+          <JoinRoomForm joinRoom={handleJoinRoom} />
         ) : (
-          <>
-            <div className="flex justify-center items-center gap-4 text-xl md:text-3xl underline mb-4 border-black font-semibold">
-              <button>Create Room</button>
-              <button className="opacity-30" onClick={adjustUI}>
-                Join Room
-              </button>
-            </div>
-            <CreateRoomForm socket={socket} joinRoom={joinRoom} />
-          </>
+          <CreateRoomForm createRoom={handleCreateRoom} />
         )}
       </div>
       <Credits />
