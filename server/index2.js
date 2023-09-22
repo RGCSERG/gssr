@@ -21,10 +21,11 @@ function getLatestMessages(roomName) {
 
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5713/",
+    origin: "*", // Allow connections from all origins
     methods: ["GET", "POST"],
   },
 });
+
 
 io.on("connection", (socket) => {
   function leaveRoomAndCheckIfEmpty(roomName, socketId, socket, roomOccupants) {
