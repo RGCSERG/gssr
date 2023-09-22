@@ -12,19 +12,23 @@ const CreateRoomMessage = ({ user, setMessageList }: Props) => {
   const { room } = useParams();
   const [currentMessage, setCurrentMessage] = useState("");
 
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleMessageSend = () => {
+    if (room && currentMessage.trim() !== "") {
+      sendMessage(
+        currentMessage,
+        room,
+        user,
+        updateMessageList,
+        setMessageList
+      );
+      setCurrentMessage("");
+    }
+  };
+
+  const handleKeydown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
       event.preventDefault(); // Prevent the default behavior of Enter (e.g., form submission)
-      if (room) {
-        sendMessage(
-          currentMessage,
-          room,
-          user,
-          updateMessageList,
-          setMessageList
-        );
-      }
-      setCurrentMessage("");
+      handleMessageSend;
     }
   };
   return (
@@ -38,14 +42,12 @@ const CreateRoomMessage = ({ user, setMessageList }: Props) => {
         onChange={(event) => {
           setCurrentMessage(event.target.value);
         }}
-        onKeyDown={handleKeyDown} // Use onKeyDown event handler
+        onKeyDown={handleKeydown} // Use onKeyDown event handler
       />
 
       <button
         className="p-3 outline-none h-full bg-white font-semibold"
-        onClick={() => {
-          sendMessage;
-        }}
+        onClick={handleMessageSend}
         disabled={!user === true}
       >
         Send
