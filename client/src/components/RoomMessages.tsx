@@ -11,6 +11,7 @@ interface Props {
 
 const RoomMessages = ({ user, messageList, setMessageList }: Props) => {
   const chatBoxRef = useRef<HTMLSpanElement>(null);
+
   const removeMessagesWithIdZero = () => {
     const filteredMessages = messageList.filter(
       (message) => message.id !== 0.1
@@ -18,6 +19,11 @@ const RoomMessages = ({ user, messageList, setMessageList }: Props) => {
     setMessageList(filteredMessages);
   };
   useEffect(() => {
+    const container = chatBoxRef.current;
+    if (container) {
+      console.log("container detected");
+      container.scrollTop = container.scrollHeight;
+    }
     if (socket) {
       socket.on("chatted_message", (message) => {
         removeMessagesWithIdZero();
@@ -28,10 +34,6 @@ const RoomMessages = ({ user, messageList, setMessageList }: Props) => {
       return () => {
         socket?.off("chatted_message", updateMessageList);
       };
-    }
-    const container = chatBoxRef.current;
-    if (container) {
-      container.scrollTop = container.scrollHeight;
     }
   }, [messageList]);
   return (
