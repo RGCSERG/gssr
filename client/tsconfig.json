@@ -20,6 +20,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "src/hooks/UseRoom.tsx"],
+  "include": ["src", "src/hooks/useRoom.tsx"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
