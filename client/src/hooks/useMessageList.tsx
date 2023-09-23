@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useMessageListContext } from "../contexts/MessageListContext";
 
-function useMessageList() {
+const useMessageList = () => {
   // Check for socket before making accessible
   const messageListContext = useMessageListContext();
 
@@ -19,6 +19,6 @@ function useMessageList() {
 
   // Return the messageList and setMessageList conditionally
   return { messageList, setMessageList };
-}
+};
 
 export default useMessageList;
