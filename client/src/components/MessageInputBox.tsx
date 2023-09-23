@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
-import useChat from "../hooks/useChat";
+import useChat from "../hooks/useChat.tsx";
 
 interface Props {
   user: string;
