@@ -1,11 +1,8 @@
 import { useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import { faviChange } from "./functions/functions";
-import { connectToSocketServer } from "./hooks/UseRoom";
 import Chat from "./pages/Chat";
 import HomePage from "./pages/HomePage";
-
-connectToSocketServer();
 
 const App = () => {
   useEffect(() => {
