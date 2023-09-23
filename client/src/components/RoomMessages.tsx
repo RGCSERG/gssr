@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
-import useChat from "../hooks/useChat.tsx";
-import useMessageList from "../hooks/useMessageList.tsx";
-import useSocket from "../hooks/useSocket.tsx";
+import useChat from "../hooks/useChat";
+import useMessageList from "../hooks/useMessageList";
+import useSocket from "../hooks/useSocket";
 
 interface Props {
   user: string;

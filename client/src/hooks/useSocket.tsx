@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useSocketContext } from "../contexts/SocketContext";
 
-function useSocket() {
+const useSocket = () => {
   //checks for socket before making accessible
   const socketContext = useSocketContext();
 
@@ -16,6 +16,6 @@ function useSocket() {
   }, [socket]);
 
   return { socket };
-}
+};
 
 export default useSocket;
