@@ -3,7 +3,7 @@ import { FieldValues, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 import useMessageList from "../hooks/useMessageList";
-import useRoom from "../hooks/useRoom.tsx";
+import useRoom from "../hooks/useRoom";
 
 interface Props {
   setUser: React.Dispatch<React.SetStateAction<string>>;
