@@ -2,10 +2,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { FieldValues, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
+import useMessageList from "../hooks/useMessageList";
+import useRoom from "../hooks/useRoom";
 
 interface Props {
-  handleClose: () => void;
   setUser: React.Dispatch<React.SetStateAction<string>>;
+  roomCode: string | undefined;
 }
 const schema = z.object({
   username: z.string().min(3).max(50),
@@ -13,8 +15,10 @@ const schema = z.object({
 
 type SignUpFormData = z.infer<typeof schema>;
 
-const MakeChangesModal = ({ handleClose, setUser }: Props) => {
+const MakeChangesModal = ({ setUser, roomCode }: Props) => {
+  const { joinRoom } = useRoom();
   const navigate = useNavigate();
+  const { setMessageList } = useMessageList();
   const {
     register,
     handleSubmit,
@@ -24,10 +28,13 @@ const MakeChangesModal = ({ handleClose, setUser }: Props) => {
     resolver: zodResolver(schema),
   });
 
-  const onSubmit = (data: FieldValues) => {
+  const onSubmit = async (data: FieldValues) => {
     setUser(data.username);
+    if (roomCode) {
+      const messageHistory = await joinRoom(roomCode);
+      setMessageList(messageHistory);
+    }
     reset();
-    handleClose();
   };
 
   return (
