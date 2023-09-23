@@ -11,7 +11,6 @@ interface Props {
 
 const Chat = ({ user, setUser }: Props) => {
   const { room } = useParams();
-  console.log(room);
 
   const navigate = useNavigate();
 

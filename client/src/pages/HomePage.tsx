@@ -32,10 +32,11 @@ const HomePage = ({ setUser }: Props) => {
     }
   };
 
-  const handleJoinRoom = (roomCode: string, username: string) => {
+  const handleJoinRoom = async (roomCode: string, username: string) => {
     setUser(username);
     navigate(`/room/${roomCode}`);
-    joinRoom(roomCode);
+    const messageHistory = await joinRoom(roomCode);
+    setMessageList(messageHistory);
   };
 
   const adjustUI = () => {

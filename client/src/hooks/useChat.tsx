@@ -30,12 +30,12 @@ const useChat = () => {
         message: currentMessage,
         time: formatTimeWithLeadingZeros(),
       };
-      updateMessageList(messageData);
+      addMessageToList(messageData);
       sendChatMessage(messageData);
     }
   };
 
-  const updateMessageList = (newMessage: ChatMessage) => {
+  const addMessageToList = (newMessage: ChatMessage) => {
     console.log("updating message list!");
     setMessageList((list) => {
       // Check if the message with the same ID exists in the list
@@ -53,7 +53,7 @@ const useChat = () => {
     });
   };
 
-  return { sendMessage, updateMessageList };
+  return { sendMessage, addMessageToList };
 };
 
 export default useChat;
