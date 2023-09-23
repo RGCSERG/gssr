@@ -2,8 +2,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { FieldValues, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
-import useMessageList from "../hooks/useMessageList";
-import useRoom from "../hooks/useRoom";
+import useMessageList from "../hooks/useMessageList.tsx";
+import useRoom from "../hooks/useRoom.tsx";
 
 interface Props {
   setUser: React.Dispatch<React.SetStateAction<string>>;
