@@ -1,33 +1,34 @@
 import { useEffect, useRef } from "react";
-import { updateMessageList } from "../hooks/UseChat";
-import { socket } from "../hooks/UseRoom";
-import { ChatMessage } from "../interfaces/ChatMessage/ChatMessage";
+import useChat from "../hooks/useChat";
+import useMessageList from "../hooks/useMessageList";
+import useSocket from "../hooks/useSocket";
 
 interface Props {
   user: string;
-  messageList: ChatMessage[];
-  setMessageList: React.Dispatch<React.SetStateAction<ChatMessage[]>>;
 }
 
-const RoomMessages = ({ user, messageList, setMessageList }: Props) => {
+const RoomMessages = ({ user }: Props) => {
+  const { socket } = useSocket();
+  const { updateMessageList } = useChat();
+  const { messageList } = useMessageList();
+
   const chatBoxRef = useRef<HTMLSpanElement>(null);
 
-  const removeMessagesWithIdZero = () => {
-    const filteredMessages = messageList.filter(
-      (message) => message.id !== 0.1
-    );
-    setMessageList(filteredMessages);
-  };
+  // const removeMessagesWithIdZero = () => {
+  //   const filteredMessages = messageList.filter(
+  //     (message) => message.id !== 0.1
+  //   );
+  //   setMessageList(filteredMessages);
+  // };
   useEffect(() => {
     const container = chatBoxRef.current;
     if (container) {
-      console.log("container detected");
       container.scrollTop = container.scrollHeight;
     }
     if (socket) {
       socket.on("chatted_message", (message) => {
-        removeMessagesWithIdZero();
-        updateMessageList(message, setMessageList);
+        // removeMessagesWithIdZero();
+        updateMessageList(message);
       });
 
       // Clean up the event listener when the component unmounts
@@ -41,7 +42,7 @@ const RoomMessages = ({ user, messageList, setMessageList }: Props) => {
       className="w-1/2 bg-white h-1/2  overflow-y-scroll no-scrollbar outline  pt-4 flex flex-col px-4"
       ref={chatBoxRef}
     >
-      {messageList.map((messageContent, index) => (
+      {messageList?.map((messageContent, index) => (
         <div
           key={messageContent.id}
           className={`${

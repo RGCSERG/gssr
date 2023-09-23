@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 import CreateRoomForm from "../components/CreateRoomForm";
 import Credits from "../components/Credits";
 import JoinRoomForm from "../components/JoinRoomForm";
-import { createRoom, joinRoom } from "../hooks/UseRoom";
+import useMessageList from "../hooks/useMessageList";
+import useRoom from "../hooks/useRoom";
+import { CreateRoomFormData } from "../interfaces/Rooms/CreateRoom";
 
 interface Props {
   setUser: React.Dispatch<React.SetStateAction<string>>;
@@ -11,37 +14,29 @@ interface Props {
 
 const HomePage = ({ setUser }: Props) => {
   const [joiningRoom, setJoiningRoom] = useState<Boolean>(false);
+  const { fetchNewRoomCode, joinRoom } = useRoom();
+  const { setMessageList } = useMessageList();
 
-  const handleCreateRoom = async (username: string) => {
-    const room = await createRoom();
-    setUser(username);
-    if (room) {
-      console.log(`Connected to ${room} as ${username}`);
-      navigate(`/room/${room}`);
+  useEffect(() => {
+    setMessageList([]);
+  }, []);
+
+  const handleCreateRoom = async (formData: CreateRoomFormData) => {
+    try {
+      const roomCode = await fetchNewRoomCode();
+      console.log(`Connected to ${roomCode} as ${formData.username}`);
+      setUser(formData.username);
+      navigate(`/room/${roomCode}`);
+    } catch (error) {
+      console.log(error);
     }
   };
 
   const handleJoinRoom = (roomCode: string, username: string) => {
     setUser(username);
-
-    joinRoom(roomCode)
-      .then((room) => {
-        // Room exists, handle it here
-        console.log(room);
-        navigate(`/room/${room}`);
-      })
-      .catch((error) => {
-        // Room does not exist or there was an error, handle the error here
-        console.error(error);
-      });
+    navigate(`/room/${roomCode}`);
+    joinRoom(roomCode);
   };
-
-  useEffect(() => {
-    //works
-    joiningRoom === true
-      ? console.log("Joining room")
-      : console.log("Creating room");
-  }, [joiningRoom]);
 
   const adjustUI = () => {
     setJoiningRoom(!joiningRoom);

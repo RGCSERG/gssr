@@ -1,11 +1,8 @@
-import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import ClipboardCopyButton from "../components/ClipboardCopyButton";
 import MakeChangesModal from "../components/MakeChangesModal";
 import MessageInputBox from "../components/MessageInputBox";
 import RoomMessages from "../components/RoomMessages";
-import { initialiseRoom } from "../hooks/UseRoom";
-import { ChatMessage } from "../interfaces/ChatMessage/ChatMessage";
 
 interface Props {
   setUser: React.Dispatch<React.SetStateAction<string>>;
@@ -14,13 +11,9 @@ interface Props {
 
 const Chat = ({ user, setUser }: Props) => {
   const { room } = useParams();
-  const [showModal, setShowModal] = useState(false);
-  const [messageList, setMessageList] = useState<ChatMessage[]>([]);
+  console.log(room);
+
   const navigate = useNavigate();
-
-  const hideModal = () => setShowModal(false);
-
-  initialiseRoom(setShowModal, setMessageList, user, room);
 
   return (
     <div className="h-full w-full flex justify-center items-center flex-col">
@@ -39,17 +32,11 @@ const Chat = ({ user, setUser }: Props) => {
         </button>
       </div>
 
-      <RoomMessages
-        user={user}
-        messageList={messageList}
-        setMessageList={setMessageList}
-      />
+      <RoomMessages user={user} />
 
-      <MessageInputBox user={user} setMessageList={setMessageList} />
+      <MessageInputBox user={user} />
 
-      {showModal && (
-        <MakeChangesModal handleClose={hideModal} setUser={setUser} />
-      )}
+      {!user && <MakeChangesModal setUser={setUser} roomCode={room} />}
     </div>
   );
 };
