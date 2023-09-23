@@ -36,7 +36,6 @@ const useChat = () => {
   };
 
   const addMessageToList = (newMessage: ChatMessage) => {
-    console.log("updating message list!");
     setMessageList((list) => {
       // Check if the message with the same ID exists in the list
       const isMessageAlreadyInList = list!.some(
