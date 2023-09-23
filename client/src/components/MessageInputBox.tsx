@@ -1,26 +1,19 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
-import { sendMessage, updateMessageList } from "../hooks/UseChat";
-import { ChatMessage } from "../interfaces/ChatMessage/ChatMessage";
+import useChat from "../hooks/useChat";
 
 interface Props {
   user: string;
-  setMessageList: React.Dispatch<React.SetStateAction<ChatMessage[]>>;
 }
 
-const MessageInputBox = ({ user, setMessageList }: Props) => {
+const MessageInputBox = ({ user }: Props) => {
   const { room } = useParams();
   const [currentMessage, setCurrentMessage] = useState("");
+  const { sendMessage } = useChat();
 
   const handleMessageSend = () => {
     if (room && currentMessage.trim() !== "") {
-      sendMessage(
-        currentMessage,
-        room,
-        user,
-        updateMessageList,
-        setMessageList
-      );
+      sendMessage(currentMessage, room, user);
       setCurrentMessage("");
     }
   };

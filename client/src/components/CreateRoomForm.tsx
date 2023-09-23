@@ -8,7 +8,7 @@ import {
 } from "../interfaces/Rooms/CreateRoom";
 
 interface Props {
-  createRoom: (username: string) => void;
+  createRoom: (formData: CreateRoomFormData) => void;
 }
 const CreateRoomForm = ({ createRoom }: Props) => {
   const {
@@ -19,15 +19,11 @@ const CreateRoomForm = ({ createRoom }: Props) => {
     resolver: zodResolver(CreateRoomSchema),
   });
 
-  const handleCreateRoom = async (data: CreateRoomFormData) => {
-    createRoom(data.username);
-  };
-
   return (
     <>
       <form
         className="flex w-full flex-col items-center justify-center gap-4"
-        onSubmit={handleSubmit(handleCreateRoom)}
+        onSubmit={handleSubmit(createRoom)}
       >
         <input
           {...register("username")}
@@ -39,12 +35,6 @@ const CreateRoomForm = ({ createRoom }: Props) => {
         {errors.username && (
           <p className="text-danger">{errors.username.message}</p>
         )}
-
-        {/* {error && (
-        <Alert key="danger" variant="danger">
-          {error}
-        </Alert>
-      )} */}
 
         <button
           disabled={!isValid}

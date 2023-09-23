@@ -14,7 +14,7 @@ const ClipboardCopyButton = () => {
   return (
     <button onClick={() => handleButtonClick()} className="text-2xl">
       {buttonClicked === true ? (
-        <p className="text-black font-semibold">Copied link!</p>
+        <p className="text-black font-semibold">Copied room link!</p>
       ) : (
         <p className=" text-blue-500 underline">Copy room link</p>
       )}

@@ -18,12 +18,7 @@ const JoinRoomForm = ({ joinRoom }: Props) => {
 
   const onSubmit = (data: JoinRoomFormData) => {
     const roomNum = data.room;
-    if (typeof roomNum === "number") {
-      ("joining an existing room");
-      joinRoom(roomNum, data.username);
-    } else {
-      console.log("Room does not exist!");
-    }
+    joinRoom(roomNum, data.username);
   };
 
   return (
@@ -51,11 +46,6 @@ const JoinRoomForm = ({ joinRoom }: Props) => {
           placeholder="Enter room name"
         />
         {errors.room && <p className="text-danger">{errors.room.message}</p>}
-        {/* {error && (
-        <Alert key="danger" variant="danger">
-          {error}
-        </Alert>
-      )} */}
 
         <button
           disabled={!isValid}
