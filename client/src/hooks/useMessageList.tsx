@@ -15,7 +15,7 @@ const useMessageList = () => {
     } else {
       console.log("Message list does not exist!");
     }
-  }, [messageList]);
+  }, []);
 
   // Return the messageList and setMessageList conditionally
   return { messageList, setMessageList };

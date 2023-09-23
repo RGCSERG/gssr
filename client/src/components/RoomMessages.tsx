@@ -30,11 +30,6 @@ const RoomMessages = ({ user }: Props) => {
         // removeMessagesWithIdZero();
         addMessageToList(message);
       });
-
-      // Clean up the event listener when the component unmounts
-      return () => {
-        socket?.off("chatted_message", addMessageToList);
-      };
     }
   }, [messageList]);
   return (
