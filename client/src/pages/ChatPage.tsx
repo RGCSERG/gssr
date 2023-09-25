@@ -9,7 +9,7 @@ interface Props {
   user: string;
 }
 
-const Chat = ({ user, setUser }: Props) => {
+const ChatPage = ({ user, setUser }: Props) => {
   const { room } = useParams();
 
   const navigate = useNavigate();
@@ -40,4 +40,4 @@ const Chat = ({ user, setUser }: Props) => {
   );
 };
 
-export default Chat;
+export default ChatPage;

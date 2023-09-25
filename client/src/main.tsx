@@ -5,15 +5,18 @@ import App from "./App";
 import MessageContext from "./contexts/MessageListContext";
 import { SocketProvider } from "./contexts/SocketContext";
 import "./index.css";
+import { AuthProvider } from "./contexts/OauthProviderContext";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <BrowserRouter>
-      <MessageContext>
-        <SocketProvider>
-          <App />
-        </SocketProvider>
-      </MessageContext>
+      <AuthProvider>
+        <MessageContext>
+          <SocketProvider>
+            <App />
+          </SocketProvider>
+        </MessageContext>
+      </AuthProvider>
     </BrowserRouter>
   </React.StrictMode>
 );

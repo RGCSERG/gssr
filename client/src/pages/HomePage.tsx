@@ -7,6 +7,7 @@ import JoinRoomForm from "../components/JoinRoomForm";
 import useMessageList from "../hooks/useMessageList";
 import useRoom from "../hooks/useRoom";
 import { CreateRoomFormData } from "../interfaces/Rooms/CreateRoom";
+import { useAuth } from "../contexts/OauthProviderContext";
 
 interface Props {
   setUser: React.Dispatch<React.SetStateAction<string>>;
@@ -16,6 +17,8 @@ const HomePage = ({ setUser }: Props) => {
   const [joiningRoom, setJoiningRoom] = useState<Boolean>(false);
   const { fetchNewRoomCode, joinRoom } = useRoom();
   const { setMessageList } = useMessageList();
+  const { loginWithGitHub } = useAuth();
+  const [isLoggingIn, setLoggingIn] = useState(false);
 
   useEffect(() => {
     setMessageList([]);
@@ -45,8 +48,13 @@ const HomePage = ({ setUser }: Props) => {
 
   const navigate = useNavigate();
 
+  const handleLoginWithGitHub = () => {
+    setJoiningRoom(true);
+    loginWithGitHub();
+  };
+
   return (
-    <>
+    <div className={"stuff"}>
       <div className="flex h-screen flex-col items-center justify-center font-mono dark:bg-black">
         <p className="text-shadow mb-4 text-3xl font-bold motion-safe:animate-bounce dark:text-white md:text-5xl">
           Welcome to gssr.
@@ -67,6 +75,9 @@ const HomePage = ({ setUser }: Props) => {
           >
             Join Room
           </button>
+          <button className="dark:text-white" onClick={handleLoginWithGitHub}>
+            Login
+          </button>
         </div>
         {joiningRoom ? (
           <JoinRoomForm joinRoom={handleJoinRoom} />
@@ -75,7 +86,7 @@ const HomePage = ({ setUser }: Props) => {
         )}
       </div>
       <Credits />
-    </>
+    </div>
   );
 };
 
