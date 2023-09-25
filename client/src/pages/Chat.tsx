@@ -13,7 +13,6 @@ interface Props {
 
 const Chat = ({ user, setUser }: Props) => {
   const { room } = useParams();
-  console.log(room);
   const isMobile = useMedia("(max-width: 768px");
 
   const navigate = useNavigate();

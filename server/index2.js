@@ -2,21 +2,30 @@ import express from "express";
 import http from "http";
 import { Server } from "socket.io";
 import cors from "cors";
-// import { insertMessage, getLatestMessages } from "./database"; // Import your message database functions
+import { insertMessage } from "./database.js"; // Import your message database functions
 
 const app = express();
 
 const roomOccupants = {};
-const messageHistory = {}; // Store message history for each room
+const roomHistory = {}; // Store message history for each room
 
 app.use(cors());
 
 const server = http.createServer(app);
 
 function getLatestMessages(roomName) {
-  const messages = messageHistory[roomName] || [];
+  const messages = roomHistory[roomName] || [];
   const startIndex = Math.max(messages.length - 20, 0); // Start index for the last 20 messages
   return messages.slice(startIndex);
+}
+
+// Function to delete a room and its messages
+function deleteRoom(roomName) {
+  if (roomHistory[roomName]) {
+    // Delete the room's message history
+    delete roomHistory[roomName];
+    console.log(`Message history for room ${roomName} has been deleted.`);
+  }
 }
 
 const io = new Server(server, {
@@ -25,7 +34,6 @@ const io = new Server(server, {
     methods: ["GET", "POST"],
   },
 });
-
 
 io.on("connection", (socket) => {
   function leaveRoomAndCheckIfEmpty(roomName, socketId, socket, roomOccupants) {
@@ -46,6 +54,9 @@ io.on("connection", (socket) => {
         // Room is empty, delete it
         delete roomOccupants[roomName];
         console.log(`Room ${roomName} is now empty and has been deleted.`);
+
+        // Delete room messages
+        deleteRoom(roomName);
       }
     }
 
@@ -64,8 +75,8 @@ io.on("connection", (socket) => {
     roomOccupants[`${roomCode}`].push(socket.id);
 
     // Initialize the message history for this room
-    if (!messageHistory[`${roomCode}`]) {
-      messageHistory[`${roomCode}`] = [];
+    if (!roomHistory[`${roomCode}`]) {
+      roomHistory[`${roomCode}`] = [];
     }
 
     // Emit the updated room occupants list to all clients in the room
@@ -103,19 +114,18 @@ io.on("connection", (socket) => {
   });
 
   socket.on("chat_message", async (message) => {
-
     // Store the message in the database
     // const newMessage = await insertMessage(message.room, message.author, message.message);
 
     // Add the message to the message history for this room
-    if (!messageHistory[message.room]) {
-      messageHistory[message.room] = [];
+    if (!roomHistory[message.room]) {
+      roomHistory[message.room] = [];
     }
-    messageHistory[message.room].push(message);
+    roomHistory[message.room].push(message);
 
     // Keep the message history limited to the last 20 messages
-    if (messageHistory[message.room].length > 20) {
-      messageHistory[message.room].shift(); // Remove the oldest message
+    if (roomHistory[message.room].length > 20) {
+      roomHistory[message.room].shift(); // Remove the oldest message
     }
 
     // Send the message to all clients in the specified room
@@ -128,12 +138,22 @@ io.on("connection", (socket) => {
 
   socket.on("leave_room", (roomName) => {
     leaveRoomAndCheckIfEmpty(roomName, socket.id, socket, roomOccupants);
+
+    // Check if the room is empty and delete it
+    if (!roomOccupants[roomName] || roomOccupants[roomName].length === 0) {
+      deleteRoom(roomName);
+    }
   });
 
   socket.on("disconnect", () => {
     console.log(`User Disconnected: ${socket.id}`);
     for (const roomName in roomOccupants) {
       leaveRoomAndCheckIfEmpty(roomName, socket.id, socket, roomOccupants);
+
+      // Check if the room is empty and delete it
+      if (!roomOccupants[roomName] || roomOccupants[roomName].length === 0) {
+        deleteRoom(roomName);
+      }
     }
   });
 });

@@ -9,7 +9,7 @@ interface Props {
 
 const RoomMessages = ({ user }: Props) => {
   const { socket } = useSocket();
-  const { updateMessageList } = useChat();
+  const { addMessageToList } = useChat();
   const { messageList } = useMessageList();
 
   const chatBoxRef = useRef<HTMLSpanElement>(null);
@@ -28,13 +28,8 @@ const RoomMessages = ({ user }: Props) => {
     if (socket) {
       socket.on("chatted_message", (message) => {
         // removeMessagesWithIdZero();
-        updateMessageList(message);
+        addMessageToList(message);
       });
-
-      // Clean up the event listener when the component unmounts
-      return () => {
-        socket?.off("chatted_message", updateMessageList);
-      };
     }
   }, [messageList]);
   return (
