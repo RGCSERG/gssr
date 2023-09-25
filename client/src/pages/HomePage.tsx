@@ -17,8 +17,9 @@ const HomePage = ({ setUser }: Props) => {
   const [joiningRoom, setJoiningRoom] = useState<Boolean>(false);
   const { fetchNewRoomCode, joinRoom } = useRoom();
   const { setMessageList } = useMessageList();
-  const { loginWithGitHub } = useAuth();
+  const { loginWithGitHub, user } = useAuth();
   const [isLoggingIn, setLoggingIn] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setMessageList([]);
@@ -46,8 +47,6 @@ const HomePage = ({ setUser }: Props) => {
     setJoiningRoom(!joiningRoom);
   };
 
-  const navigate = useNavigate();
-
   const handleLoginWithGitHub = () => {
     setJoiningRoom(true);
     loginWithGitHub();
@@ -55,6 +54,7 @@ const HomePage = ({ setUser }: Props) => {
 
   return (
     <div className={"stuff"}>
+      {user && user}
       <div className="flex h-screen flex-col items-center justify-center font-mono dark:bg-black">
         <p className="text-shadow mb-4 text-3xl font-bold motion-safe:animate-bounce dark:text-white md:text-5xl">
           Welcome to gssr.
