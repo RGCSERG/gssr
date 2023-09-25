@@ -11,7 +11,7 @@ interface Props {
   user: string;
 }
 
-const Chat = ({ user, setUser }: Props) => {
+const ChatPage = ({ user, setUser }: Props) => {
   const { room } = useParams();
   const isMobile = useMedia("(max-width: 768px");
 
@@ -44,4 +44,4 @@ const Chat = ({ user, setUser }: Props) => {
   );
 };
 
-export default Chat;
+export default ChatPage;
