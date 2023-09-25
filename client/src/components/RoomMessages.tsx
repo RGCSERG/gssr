@@ -39,7 +39,7 @@ const RoomMessages = ({ user }: Props) => {
   }, [messageList]);
   return (
     <span
-      className="w-1/2 bg-white h-1/2  overflow-y-scroll no-scrollbar outline  pt-4 flex flex-col px-4"
+      className="w-full overflow-x-hidden md:w-3/5 bg-white h-3/5 md:h-1/2  outline-4 overflow-y-scroll no-scrollbar outline  pt-4 flex flex-col px-4"
       ref={chatBoxRef}
     >
       {messageList?.map((messageContent, index) => (
@@ -53,13 +53,13 @@ const RoomMessages = ({ user }: Props) => {
             {user === messageContent.author ? "you" : messageContent.author}
           </p>
           <div
-            className={`outline rounded-sm w-fit p-3 mb-4 text-lg
+            className={`outline rounded-sm  p-3 mb-4 text-lg
               flex items-center justify-between gap-8
               ${user === messageContent.author ? " bg-slate-200" : "self-end"}`}
             id={user === messageContent.author ? "you" : "other"}
             key={index}
           >
-            <p>{messageContent.message}</p>
+            <p className="break-all break-words">{messageContent.message}</p>
             <p className="opacity-50"> {messageContent.time} </p>
           </div>
         </div>
