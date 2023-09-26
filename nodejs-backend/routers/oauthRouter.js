@@ -1,9 +1,9 @@
 import express from "express";
 const oauthRouter = express.Router();
 
-app.use(bodyParser.json());
+oauthRouter.use(express.json());
 
-oauthRouter.get("/oauth/callback", async (req, res) => {
+oauthRouter.get("/callback", async (req, res) => {
   const { code } = req.body;
   const data = {
     client_id: GITHUB_CLIENT_ID,
