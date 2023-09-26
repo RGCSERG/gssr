@@ -1,12 +1,14 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
 import { ContextProps } from "../interfaces/Context/Context";
+import { getUserDataRequests } from "../HTTPRequests/HTTPRequests";
 
 interface MessageListContextType {
   user: string;
   loginWithGitHub: () => void;
   loginAsGuest: (usernameString: string) => void;
   logout: () => void;
+  getUserData: (code: string) => void;
 }
 
 const defaultContextValue: MessageListContextType = {
@@ -14,6 +16,7 @@ const defaultContextValue: MessageListContextType = {
   loginWithGitHub: () => {},
   loginAsGuest: () => {},
   logout: () => {},
+  getUserData: () => {},
 };
 
 const AuthContext = createContext(defaultContextValue);
@@ -23,9 +26,9 @@ const GITHUB_CLIENT_ID = import.meta.env.VITE_GITHUB_CLIENT_ID;
 
 export const AuthProvider = ({ children }: ContextProps) => {
   const [user, setUser] = useState("");
+  const [token, setToken] = useState("");
 
   useEffect(() => {
-    const token = localStorage.getItem("github_token");
     if (token) {
       // If a token exists, fetch user data and set the user.
       axios
@@ -41,16 +44,19 @@ export const AuthProvider = ({ children }: ContextProps) => {
           console.error("Error fetching user data:", error);
         });
     }
-  }, []);
+  }, [token]);
 
   const loginAsGuest = (usernameString: string) => {
     setUser(usernameString);
   };
 
+  const getUserData = (code: string) => {
+    const response = getUserDataRequests(setUser, code);
+  };
+
   const loginWithGitHub = () => {
     try {
-      // Redirect the user to GitHub for authentication
-      window.location.href = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=${GITHUB_REDIRECT_URL}&scope=user`;
+      window.location.href = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=${GITHUB_REDIRECT_URL}&scope=user%20user:email`;
     } catch (error) {
       console.error("Error logging in with GitHub:", error);
     }
@@ -58,7 +64,7 @@ export const AuthProvider = ({ children }: ContextProps) => {
 
   const logout = () => {
     // Clear user data and token from storage
-    localStorage.removeItem("github_token");
+    setToken("");
     setUser("");
   };
 
@@ -69,6 +75,7 @@ export const AuthProvider = ({ children }: ContextProps) => {
         loginWithGitHub,
         logout,
         loginAsGuest,
+        getUserData,
       }}
     >
       {children}

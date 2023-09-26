@@ -1,10 +1,27 @@
 import express from "express";
 const oauthRouter = express.Router();
 
-// Define your route handler
-oauthRouter.get("/oauth/callback", (req, res) => {
-  // Handle the /data route logic here
-  res.json({ message: "API data" });
+oauthRouter.use(express.json());
+
+oauthRouter.get("/callback", async (req, res) => {
+  const { code } = req.body;
+  const data = {
+    client_id: GITHUB_CLIENT_ID,
+    client_secret: GITHUB_CLIENT_SECRET,
+    code,
+  };
+
+  try {
+    const response = await axios.post(GITHUB_URL + GITHUB_GET_TOKEN_URL, data);
+    const accessToken = response.data.access_token;
+
+    console.log(accessToken);
+
+    res.json({ accessToken });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "OAuth token exchange failed" });
+  }
 });
 
 export default oauthRouter;
