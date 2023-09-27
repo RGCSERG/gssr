@@ -41,7 +41,7 @@ const MakeChangesModal = ({ setUser, roomCode }: Props) => {
     <div className="w-screen h-screen flex justify-center items-center  absolute backdrop-blur-md">
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="text-2xl bg-white flex flex-col items-center justify-center gap-10"
+        className="text-2xl  flex flex-col items-center justify-center gap-10"
       >
         <h1 className="text-4xl font-semibold">Please enter a username</h1>
         <div>
