@@ -1,10 +1,5 @@
 import axios from "axios";
-import { GITHUB_GET_TOKEN_URL, GITHUB_URL } from "./API__URLS";
 import { OauthResponse } from "../interfaces/Oauth/OauthResponse";
-import { GetAccessToken } from "../interfaces/Oauth/GetAccessToken";
-
-const GITHUB_CLIENT_ID = import.meta.env.VITE_GITHUB_CLIENT_ID;
-const GITHUB_CLIENT_SECRET = import.meta.env.VITE_GITHUB_CLIENT_SECRET;
 
 export const getUserDataRequests = async (
   setUser: React.Dispatch<React.SetStateAction<string>>,
@@ -14,15 +9,9 @@ export const getUserDataRequests = async (
   let retryCount = 0;
 
   const attemptRequest = async (): Promise<any> => {
-    const data: GetAccessToken = {
-      client_id: GITHUB_CLIENT_ID,
-      client_secret: GITHUB_CLIENT_SECRET,
-      code: code,
-    };
     try {
-      const response = await axios.post<OauthResponse>(
-        GITHUB_URL + GITHUB_GET_TOKEN_URL,
-        data
+      const response = await axios.get<OauthResponse>(
+        `http://localhost:5174/api/oauth/callback?code=${code}`
       );
       console.log(response);
       setUser(response.data.access_token);
