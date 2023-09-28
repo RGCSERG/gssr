@@ -8,7 +8,7 @@ import OauthRedirectPage from "./pages/OauthRedirectPage";
 const App = () => {
   useEffect(() => {
     faviChange();
-    document.title = "the middest chatroom";
+    document.title = "gssr";
   }, []);
 
   const [user, setUser] = useState<string>("");
