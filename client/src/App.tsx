@@ -9,7 +9,7 @@ import ArrayShinaningans from "./pages/ArrayShinaningans";
 const App = () => {
   useEffect(() => {
     faviChange();
-    document.title = "the middest chatroom";
+    document.title = "gssr";
   }, []);
 
   const [user, setUser] = useState<string>("");
