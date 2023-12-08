@@ -11,10 +11,16 @@ const GameBoard = () => {
 
   const [player, setPlayer] = useState<number>(1);
   const [error, setError] = useState<string>("");
+  const [hoverIndices, setHoverIndices] = useState<number[]>([]);
 
   const [array, updateArray] = useState<number[]>(a);
 
-  const handleMouseEnter = () => {};
+  const handleMouseEnter = (index: number) => {
+    const column: number = index % 9;
+    const indices: number[] = getIndices(column);
+    console.log("Column:" + column, "Indices:", indices);
+    setHoverIndices(indices);
+  };
 
   const getIndices = (column: number): number[] => {
     let array: number[] = [];
@@ -72,17 +78,18 @@ const GameBoard = () => {
       <div className="grid grid-cols-9 p-10">
         {array.map((value, index) => (
           <div
-            onMouseEnter={}
+            onMouseEnter={() => handleMouseEnter(index)}
+            onClick={() => handleClick(index)}
+            onMouseLeave={() => setHoverIndices([])}
             key={index}
             className={`border border-black-500 h-16
             ${value == 1 ? "bg-blue-500" : null}
             ${value == 2 ? "bg-red-500" : null}
-            hover:bg-slate-200 hover:bg-opacity-50
+            ${
+              hoverIndices.includes(index) ? "bg-slate-200 bg-opacity-50" : null
+            }
           `}
-            onClick={() => handleClick(index)}
-          >
-            {}
-          </div>
+          />
         ))}
       </div>
     </div>
