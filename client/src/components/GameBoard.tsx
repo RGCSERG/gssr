@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { boolean, number } from "zod";
+import { useEffect, useState } from "react";
 
 const GameBoard = () => {
+  const GRID_WIDTH: number = 6;
+  const GRID_HEIGHT: number = 9;
   const [player, setPlayer] = useState<number>(1);
   const [error, setError] = useState<string>("");
   const [hoverIndices, setHoverIndices] = useState<number[]>([]);
@@ -10,53 +11,51 @@ const GameBoard = () => {
 
   useEffect(() => {
     let a: number[] = [];
-    for (let i = 0; i < 9; i++) {
-      for (let j = 0; j < 9; j++) {
-        a.push(0);
-      }
+    for (let i = 0; i < GRID_WIDTH * GRID_HEIGHT; i++) {
+      a.push(0);
     }
     setArray(a);
   }, [reset]);
 
   const checkForWin = (index: number): number => {
-    const column: number = index % 9;
-    const row: number = Math.floor(index / 9);
+    const column: number = index % GRID_WIDTH;
+    const row: number = Math.floor(index / GRID_WIDTH);
     const columnIndices = getColumnIndices(column);
-    //check horizontals
-    //best solution is just check the whole row and column and see if we get a > 4 combo
     let sequentialDiscs = 1;
-    // console.log(
-    //   `${columnIndices} player: ${player} sequential ${sequentialDiscs}`
-    // );
-    columnIndices.forEach((value) => {
-      array[value] == player
-        ? (sequentialDiscs = sequentialDiscs + 1)
-        : (sequentialDiscs = 1);
-      // console.log(array[value]);
+    //check vertical win
+    for (let i = 0; i < GRID_HEIGHT; i++) {
+      index = columnIndices[i];
+      array[index] == player ? (sequentialDiscs += 1) : (sequentialDiscs = 1);
       if (sequentialDiscs == 4) {
-        console.log("4 in a row detected: breaking");
+        return player;
       }
-    });
-    if (sequentialDiscs == 4) {
-      return player;
     }
-    console.log(sequentialDiscs);
+    //check horizontal win
     sequentialDiscs = 1;
+    for (let i = 0; i < GRID_WIDTH; i++) {
+      index = row * GRID_WIDTH + i;
+      array[index] == player ? (sequentialDiscs += 1) : (sequentialDiscs = 1);
+      if (sequentialDiscs == 4) {
+        return player;
+      }
+      console.log(index);
+    }
+    sequentialDiscs = 1;
+    //check diagonals
 
     return 0;
   };
 
   const handleMouseEnter = (index: number) => {
-    const column: number = index % 9;
+    const column: number = index % GRID_WIDTH;
     const indices: number[] = getColumnIndices(column);
-    // console.log("Column:" + column, "Indices:", indices);
     setHoverIndices(indices);
   };
 
   const getColumnIndices = (column: number): number[] => {
     let array: number[] = [];
-    for (let i = 0; i < 9; i++) {
-      const num: number = column + 9 * i;
+    for (let i = 0; i < GRID_HEIGHT; i++) {
+      const num: number = column + GRID_WIDTH * i;
       array.push(num);
     }
     return array;
@@ -65,7 +64,7 @@ const GameBoard = () => {
   const handleClick = (id: number) => {
     setError("");
 
-    const column: number = id % 9;
+    const column: number = id % GRID_WIDTH;
 
     const indices: number[] = getColumnIndices(column);
     let emptySlot: number = -1;
@@ -114,7 +113,7 @@ const GameBoard = () => {
       {error != "" ? (
         <h1 className="text-4xl text-red-500 p-4">{error}</h1>
       ) : null}
-      <div className="grid grid-cols-9 p-10">
+      <div className={`grid grid-cols-${GRID_WIDTH} p-10`}>
         {array.map((value, index) => (
           <div
             onMouseEnter={() => handleMouseEnter(index)}
