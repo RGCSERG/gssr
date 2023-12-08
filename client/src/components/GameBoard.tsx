@@ -24,8 +24,10 @@ const GameBoard = () => {
     let sequentialDiscs = 1;
     //check vertical win
     for (let i = 0; i < GRID_HEIGHT; i++) {
-      index = columnIndices[i];
-      array[index] == player ? (sequentialDiscs += 1) : (sequentialDiscs = 1);
+      const currentIndex = columnIndices[i];
+      array[currentIndex] == player
+        ? (sequentialDiscs += 1)
+        : (sequentialDiscs = 1);
       if (sequentialDiscs == 4) {
         return player;
       }
@@ -33,15 +35,60 @@ const GameBoard = () => {
     //check horizontal win
     sequentialDiscs = 1;
     for (let i = 0; i < GRID_WIDTH; i++) {
-      index = row * GRID_WIDTH + i;
-      array[index] == player ? (sequentialDiscs += 1) : (sequentialDiscs = 1);
+      const currentIndex = row * GRID_WIDTH + i;
+      array[currentIndex] == player
+        ? (sequentialDiscs += 1)
+        : (sequentialDiscs = 1);
       if (sequentialDiscs == 4) {
         return player;
       }
-      console.log(index);
     }
     sequentialDiscs = 1;
-    //check diagonals
+    //check left diagonals
+    let startingIndex = -1;
+    for (let i = 0; i < Math.max(GRID_HEIGHT, GRID_WIDTH); i++) {
+      const currentRow = index - i * GRID_WIDTH;
+      const currentIndex = currentRow - i;
+      // console.log(`Current column: ${index % GRID_WIDTH}`);
+      if (currentIndex % GRID_WIDTH === 0) {
+        startingIndex = currentIndex;
+        break;
+      }
+    }
+    for (let i = 0; i < Math.max(GRID_HEIGHT, GRID_WIDTH); i++) {
+      const currentRow = startingIndex + i * GRID_WIDTH;
+      const currentIndex = currentRow + i;
+      console.log(`Current column: ${index % GRID_WIDTH}`);
+      array[currentIndex] == player
+        ? (sequentialDiscs += 1)
+        : (sequentialDiscs = 1);
+      if (sequentialDiscs == 4) {
+        return player;
+      }
+    }
+    //check right diagonals
+    sequentialDiscs = 1;
+    //check left diagonals
+    for (let i = 0; i < Math.max(GRID_HEIGHT, GRID_WIDTH); i++) {
+      const currentRow = index - i * GRID_WIDTH;
+      const currentIndex = currentRow + i;
+      // console.log(`Current column: ${index % GRID_WIDTH}`);
+      if (currentIndex % GRID_WIDTH === GRID_WIDTH - 1) {
+        startingIndex = currentIndex;
+        break;
+      }
+    }
+    for (let i = 0; i < Math.max(GRID_HEIGHT, GRID_WIDTH); i++) {
+      const currentRow = startingIndex + i * GRID_WIDTH;
+      const currentIndex = currentRow - i;
+      console.log(`Current column: ${index % GRID_WIDTH}`);
+      array[currentIndex] == player
+        ? (sequentialDiscs += 1)
+        : (sequentialDiscs = 1);
+      if (sequentialDiscs == 4) {
+        return player;
+      }
+    }
 
     return 0;
   };
