@@ -4,6 +4,7 @@ import { faviChange } from "./functions/functions";
 import ChatPage from "./pages/ChatPage";
 import HomePage from "./pages/HomePage";
 import OauthRedirectPage from "./pages/OauthRedirectPage";
+import ArrayShinaningans from "./pages/ArrayShinaningans";
 
 const App = () => {
   useEffect(() => {
@@ -22,6 +23,7 @@ const App = () => {
           element={<ChatPage user={user} setUser={setUser} />}
         />
         <Route path="/oauth/callback" element={<OauthRedirectPage />} />
+        <Route path="/money" element={<ArrayShinaningans />} />
       </Routes>
     </div>
   );
