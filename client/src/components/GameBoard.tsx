@@ -1,28 +1,59 @@
 import React, { useEffect, useState } from "react";
-import { number } from "zod";
+import { boolean, number } from "zod";
 
 const GameBoard = () => {
-  let a: number[] = [];
-  for (let i = 0; i < 9; i++) {
-    for (let j = 0; j < 9; j++) {
-      a.push(0);
-    }
-  }
-
   const [player, setPlayer] = useState<number>(1);
   const [error, setError] = useState<string>("");
   const [hoverIndices, setHoverIndices] = useState<number[]>([]);
+  const [reset, setReset] = useState<boolean>(false);
+  const [array, setArray] = useState<number[]>([]);
 
-  const [array, updateArray] = useState<number[]>(a);
+  useEffect(() => {
+    let a: number[] = [];
+    for (let i = 0; i < 9; i++) {
+      for (let j = 0; j < 9; j++) {
+        a.push(0);
+      }
+    }
+    setArray(a);
+  }, [reset]);
+
+  const checkForWin = (index: number): number => {
+    const column: number = index % 9;
+    const row: number = Math.floor(index / 9);
+    const columnIndices = getColumnIndices(column);
+    //check horizontals
+    //best solution is just check the whole row and column and see if we get a > 4 combo
+    let sequentialDiscs = 1;
+    // console.log(
+    //   `${columnIndices} player: ${player} sequential ${sequentialDiscs}`
+    // );
+    columnIndices.forEach((value) => {
+      array[value] == player
+        ? (sequentialDiscs = sequentialDiscs + 1)
+        : (sequentialDiscs = 1);
+      // console.log(array[value]);
+      if (sequentialDiscs == 4) {
+        console.log("4 in a row detected: breaking");
+      }
+    });
+    if (sequentialDiscs == 4) {
+      return player;
+    }
+    console.log(sequentialDiscs);
+    sequentialDiscs = 1;
+
+    return 0;
+  };
 
   const handleMouseEnter = (index: number) => {
     const column: number = index % 9;
-    const indices: number[] = getIndices(column);
-    console.log("Column:" + column, "Indices:", indices);
+    const indices: number[] = getColumnIndices(column);
+    // console.log("Column:" + column, "Indices:", indices);
     setHoverIndices(indices);
   };
 
-  const getIndices = (column: number): number[] => {
+  const getColumnIndices = (column: number): number[] => {
     let array: number[] = [];
     for (let i = 0; i < 9; i++) {
       const num: number = column + 9 * i;
@@ -31,40 +62,48 @@ const GameBoard = () => {
     return array;
   };
 
-  const getEmptySlot = (indices: number[]): number => {
-    let slot: number = -1;
-    indices.map((value) => {
-      if (array[value] == 0) {
-        slot = value;
-      }
-    });
-    return slot;
-  };
-
   const handleClick = (id: number) => {
+    setError("");
+
     const column: number = id % 9;
 
-    const indices: number[] = getIndices(column);
-    const slot: number = getEmptySlot(indices);
+    const indices: number[] = getColumnIndices(column);
+    let emptySlot: number = -1;
+    indices.map((value) => {
+      if (array[value] == 0) {
+        emptySlot = value;
+      }
+    });
+
+    let selectedIndex = -1;
 
     const newArray = array.map((value, index) => {
-      if (index == slot) {
+      if (index == emptySlot) {
         if (value == 0) {
           player === 1 ? setPlayer(2) : setPlayer(1);
-          // console.log("Found empty slot at index: " + slot);
+          // console.log("Found empty emptySlot at index: " + emptySlot);
+          selectedIndex = index;
           return player;
         } else {
           return value;
         }
       } else {
-        if (slot == -1) {
+        if (emptySlot == -1) {
           setError("Please choose a non full column");
         }
         return value;
       }
     });
     // Update the state with the new array
-    updateArray(newArray);
+    setArray(newArray);
+    let winResult = 0;
+    if (selectedIndex != -1) {
+      winResult = checkForWin(selectedIndex);
+    }
+    if (winResult == 1 || winResult == 2) {
+      setError(`${winResult} wins the game!`);
+      setReset(!reset);
+    }
   };
 
   // useEffect(() => {}, [array]);
