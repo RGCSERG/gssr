@@ -1,7 +1,7 @@
 import GameBoard from "../components/GameBoard";
 
-const ArrayShinaningans = () => {
+const Connect4 = () => {
   return <GameBoard />;
 };
 
-export default ArrayShinaningans;
+export default Connect4;

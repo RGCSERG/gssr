@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import { faviChange } from "./functions/functions";
 import ChatPage from "./pages/ChatPage";
+import ArrayShinaningans from "./pages/Connect4";
 import HomePage from "./pages/HomePage";
 import OauthRedirectPage from "./pages/OauthRedirectPage";
-import ArrayShinaningans from "./pages/ArrayShinaningans";
 
 const App = () => {
   useEffect(() => {
@@ -23,7 +23,7 @@ const App = () => {
           element={<ChatPage user={user} setUser={setUser} />}
         />
         <Route path="/oauth/callback" element={<OauthRedirectPage />} />
-        <Route path="/money" element={<ArrayShinaningans />} />
+        <Route path="/connect4" element={<ArrayShinaningans />} />
       </Routes>
     </div>
   );
