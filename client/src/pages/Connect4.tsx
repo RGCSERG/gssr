@@ -1,17 +1,25 @@
 import { useEffect, useState } from "react";
 
-const GRID_WIDTH: number = 6;
+const GRID_WIDTH: number = 9;
 const GRID_HEIGHT: number = 9;
+const room = 5173;
 
 type SizeVariants = {
   [key: number]: string;
 };
 
-const sizeVariants: SizeVariants = {
+const widthVariants: SizeVariants = {
   6: "grid-cols-6",
   7: "grid-cols-7",
   8: "grid-cols-8",
   9: "grid-cols-9",
+};
+
+const heightVariants: SizeVariants = {
+  6: "grid-rows-6",
+  7: "grid-rows-7",
+  8: "grid-rows-8",
+  9: "grid-rows-9",
 };
 
 const Connect4 = () => {
@@ -19,8 +27,9 @@ const Connect4 = () => {
   const [error, setError] = useState<string>("");
   const [hoverIndices, setHoverIndices] = useState<number[]>([]);
   const [reset, setReset] = useState<boolean>(false);
-  const [gameEnd, setGameEnd] = useState<boolean>(true);
+  const [winner, setWinner] = useState<number>(0);
   const [array, setArray] = useState<number[]>([]);
+  const [turnCount, setTurnCount] = useState<number>(0);
 
   useEffect(() => {
     let a: number[] = [];
@@ -29,7 +38,7 @@ const Connect4 = () => {
     }
     setArray(a);
     setReset(false);
-    setGameEnd(false);
+    setWinner(0);
   }, [reset]);
 
   const checkForWin = (index: number): number => {
@@ -109,7 +118,7 @@ const Connect4 = () => {
   };
 
   const handleMouseEnter = (index: number) => {
-    if (gameEnd) return;
+    if (winner) return;
     const column: number = index % GRID_WIDTH;
     const indices: number[] = getColumnIndices(column);
     setHoverIndices(indices);
@@ -125,7 +134,7 @@ const Connect4 = () => {
   };
 
   const handleClick = (id: number) => {
-    if (gameEnd) return;
+    if (winner) return;
     setError("");
 
     const column: number = id % GRID_WIDTH;
@@ -143,9 +152,13 @@ const Connect4 = () => {
     const newArray = array.map((value, index) => {
       if (index == emptySlot) {
         if (value == 0) {
+          //code when successful selection
           player === 1 ? setPlayer(2) : setPlayer(1);
           // console.log("Found empty emptySlot at index: " + emptySlot);
           selectedIndex = index;
+          setTurnCount(() => {
+            return turnCount + 1;
+          });
           return player;
         } else {
           return value;
@@ -164,41 +177,57 @@ const Connect4 = () => {
       winResult = checkForWin(selectedIndex);
     }
     if (winResult == 1 || winResult == 2) {
-      setError(`${winResult} wins the game!`);
-      setGameEnd(true);
+      setWinner(winResult);
     }
   };
 
   // useEffect(() => {}, [array]);
 
   return (
-    <div>
-      <h1 className="text-4xl p-4">Connect 4: {player}'s turn</h1>
-      {error != "" ? (
-        <h1 className="text-4xl text-red-500 p-4">{error}</h1>
-      ) : null}
-      {gameEnd ? (
-        <button
-          onClick={() => {
-            setReset(true);
-          }}
-        >
-          Reset game!
-        </button>
-      ) : null}
-      <div className={`grid ${sizeVariants[GRID_WIDTH]} p-10`}>
+    <div className="w-screen h-screen flex flex-col items-center justify-center">
+      <nav className="h-20 flex justify-center gap-4 items-center w-full">
+        <h1 className="text-4xl">GSSR room: {room}</h1>
+        {winner !== 0 ? (
+          <h1>{winner} is the winner</h1>
+        ) : (
+          <h1 className="text-4xl">
+            Player {player}'s turn, Turn: {turnCount}
+          </h1>
+        )}
+        {error != "" ? (
+          <h1 className="text-4xl text-red-500">{error}</h1>
+        ) : null}
+        {winner ? (
+          <button
+            onClick={() => {
+              setReset(true);
+            }}
+          >
+            Reset game!
+          </button>
+        ) : null}
+      </nav>
+      <div
+        className={`grid ${widthVariants[GRID_WIDTH]} ${heightVariants[GRID_HEIGHT]} outline w-2/3 md:w-3/4 lg:w-1/3`}
+      >
         {array.map((value, index) => (
           <div
             onMouseEnter={() => handleMouseEnter(index)}
             onClick={() => handleClick(index)}
             onMouseLeave={() => setHoverIndices([])}
             key={index}
-            className={`border border-black-500 h-16
-            ${hoverIndices.includes(index) ? " bg-opacity-50" : null}
-            ${value == 1 ? "bg-blue-500" : null}
-            ${value == 2 ? "bg-red-500" : null}
-          `}
-          />
+            className={`border border-black-500 aspect-square
+              ${hoverIndices.includes(index) ? " bg-opacity-50" : null}
+            `}
+          >
+            <div
+              className={`rounded-full w-full h-full
+                ${value == 1 ? "bg-blue-500" : null}
+                ${value == 2 ? "bg-red-500" : null}
+        
+              `}
+            />
+          </div>
         ))}
       </div>
     </div>
