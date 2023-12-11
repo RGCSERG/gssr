@@ -39,6 +39,8 @@ const Connect4 = () => {
     setArray(a);
     setReset(false);
     setWinner(0);
+    setTurnCount(0);
+    setPlayer(1);
   }, [reset]);
 
   const checkForWin = (index: number): number => {
@@ -118,10 +120,11 @@ const Connect4 = () => {
   };
 
   const handleMouseEnter = (index: number) => {
-    if (winner) return;
+    console.log("Hovering");
     const column: number = index % GRID_WIDTH;
     const indices: number[] = getColumnIndices(column);
     setHoverIndices(indices);
+    console.log(indices);
   };
 
   const getColumnIndices = (column: number): number[] => {
@@ -186,7 +189,15 @@ const Connect4 = () => {
   return (
     <div className="w-screen h-screen flex flex-col items-center justify-center">
       <nav className="h-20 flex justify-center gap-4 items-center w-full">
-        <h1 className="text-4xl">GSSR room: {room}</h1>
+        <button
+          className="bg-red-100 p-2 rounded-md"
+          onClick={() => {
+            setReset(true);
+          }}
+        >
+          Reset game
+        </button>
+        {/* <h1 className="text-4xl">GSSR room: {room}</h1> */}
         {winner !== 0 ? (
           <h1>{winner} is the winner</h1>
         ) : (
@@ -216,15 +227,18 @@ const Connect4 = () => {
             onClick={() => handleClick(index)}
             onMouseLeave={() => setHoverIndices([])}
             key={index}
-            className={`border border-black-500 aspect-square
-              ${hoverIndices.includes(index) ? " bg-opacity-50" : null}
+            className={`bg-blue-500 border-blue-500 aspect-square grid place-items-center
+              ${
+                hoverIndices.includes(index)
+                  ? " bg-opacity-50 bg-slate-500"
+                  : null
+              }
             `}
           >
             <div
-              className={`rounded-full w-full h-full
-                ${value == 1 ? "bg-blue-500" : null}
-                ${value == 2 ? "bg-red-500" : null}
-        
+              className={`rounded-full w-3/4 h-3/4
+                ${value == 2 ? "bg-yellow-300" : null}
+                ${value == 1 ? "bg-red-500" : "bg-white"}
               `}
             />
           </div>
